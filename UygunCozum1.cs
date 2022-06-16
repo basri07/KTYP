@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace KTYP
 {
     public partial class UygunCozum1//:OnculMatrisi
     {
-        public ArrayList UygunCozum(ArrayList array, List<OnculMatrisi> onculMatrisi,int nodeCount)
+        public ArrayList UygunCozum(ArrayList array, List<OnculMatrisi> onculMatrisi, int nodeCount)
         {
             ArrayList oncularrayIndex = new ArrayList();
         BastanBasla:
@@ -27,7 +20,7 @@ namespace KTYP
 #pragma warning restore CS8602 // Olası bir null başvurunun başvurma işlemi.
                 int insertTo = 0;
                 int OnculMiktari = onculMatrisi[a].Miktar;
-                if ( (array != null) && (i!=0)  && (OnculMiktari > 1) && (i != nodeCount-1))
+                if ((array != null) && (i != 0) && (OnculMiktari > 1) && (i != nodeCount - 1))
                 {
                     int aindex = i;
                     for (int k = 0; k < OnculMiktari; k++)
@@ -38,7 +31,7 @@ namespace KTYP
                         oncularrayIndex.Sort();
                         insertTo = Convert.ToInt32(oncularrayIndex[^1]);
                     }
-                    if (i<insertTo)
+                    if (i < insertTo)
                     {
                         array.RemoveAt(i);
                         array.Insert(insertTo, a);

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
 using System.Collections;
 using System.Data;
-using System.Diagnostics;
+using System.Data.SqlClient;
+using System.Text;
 
 namespace KTYP
 {
@@ -18,9 +14,9 @@ namespace KTYP
             this.baglanti = baglanti;
             this.dataId = dataId;
             this.sopk = sopk;
-            this.UH = new UzaklikHesapla(baglanti,sopk,dataId);   
+            this.UH = new UzaklikHesapla(baglanti, sopk, dataId);
         }
-        public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi,bool EYKS)
+        public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi, bool EYKS)
         {
             ArrayList atananDugumIDListesi = new ArrayList();
             StringBuilder sonuc = new StringBuilder("");
@@ -31,7 +27,7 @@ namespace KTYP
             {
                 int RandomIndex;
                 int atananDugumID;
-                if (EYKS==false|| i==0)
+                if (EYKS == false || i == 0)
                 {
                     RandomIndex = rastgeleAtama.Next(atanabilirDugumIDListesi.Count - 1);
                     atananDugumID = Convert.ToInt32(atanabilirDugumIDListesi[RandomIndex]);
@@ -44,8 +40,8 @@ namespace KTYP
                     StringBuilder sb = new StringBuilder("SELECT DUGUM_J,MIN(UZAKLIK)AS UZAKLIK FROM KTYP.. DENEMEUZAKLIKMATRIS WHERE DATA_ID ='" + dataId + "' AND DUGUM_I=" + atananDugumIDListesi[^1] + " AND DUGUM_J IN (");
                     for (int j = 0; j < atanabilirDugumIDListesi.Count; j++)
                     {
-                        sb.Append(""+atanabilirDugumIDListesi[j]+",");
-                        if(j==atanabilirDugumIDListesi.Count-1)
+                        sb.Append("" + atanabilirDugumIDListesi[j] + ",");
+                        if (j == atanabilirDugumIDListesi.Count - 1)
                         {
                             sb.Append("" + atanabilirDugumIDListesi[j] + ") GROUP BY DUGUM_J ORDER BY UZAKLIK");
                         }
@@ -61,9 +57,9 @@ namespace KTYP
                     sopk.AtananID = atananDugumID;
                     atanabilirDugumIDListesi.Remove(atananDugumID);
                 }
-                if(atanabilirDugumIDListesi.Count==0)
-                { 
-                sopk.OnculKontrol(this.dataId,atananDugumID, atananDugumIDListesi, atanabilirDugumIDListesi);
+                if (atanabilirDugumIDListesi.Count == 0)
+                {
+                    sopk.OnculKontrol(this.dataId, atananDugumID, atananDugumIDListesi, atanabilirDugumIDListesi);
                 }
                 sonuc.Append(Convert.ToString(atananDugumIDListesi[i]) + " ");
             }
@@ -72,7 +68,7 @@ namespace KTYP
             sonuc.Append(ToplamUzaklik.ToString());
             return sonuc.ToString();
         }
-        
+
     }
-    
+
 }

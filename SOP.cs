@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace KTYP
 {
@@ -57,7 +55,7 @@ namespace KTYP
                     Matris.Add(NODE);
                 }
             }
-           
+
             //Matris.FirstOrDefault<OnculMatrisi>(x => x.Dugum_J != null);
 
             #endregion Oncelik Matrisini Ekliyoruz
@@ -86,7 +84,7 @@ namespace KTYP
             #region PARAMETRELER
             //ATANABİLİR VE ATANAN DÜĞÜMLERİN LİSTE TANIMLAMASI
             ArrayList atanabilirDugumIDListesi = new ArrayList();
-            int BaslangıcID, BitisID; 
+            int BaslangıcID, BitisID;
             //BAŞLANGIC VE BİTİŞ DÜĞÜMLERİNİN BULUNMASI 1 başangıç 1 bitiş için
             baglanti.Open();
             SqlCommand komut = new SqlCommand("SELECT DURUM,DUGUM_I FROM KTYP.. VW_SOP_BASLANGIC_BITIS WHERE DATA_ID ='" + dataId + "'", baglanti);
@@ -109,6 +107,6 @@ namespace KTYP
             return atanabilirDugumIDListesi;
             #endregion
         }
-        public abstract string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi,bool EYKS);
+        public abstract string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi, bool EYKS);
     }
 }

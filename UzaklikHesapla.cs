@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace KTYP
 {
-    public partial class UzaklikHesapla:SOP
+    public partial class UzaklikHesapla : SOP
     {
         public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi, bool EYKS)
         {
@@ -44,5 +41,5 @@ namespace KTYP
             return ToplamUzaklik;
         }
     }
-    
+
 }

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace KTYP
 {
@@ -19,8 +16,7 @@ namespace KTYP
             this.UH = new UzaklikHesapla(baglanti, sopk, dataId);
 
         }
-
-        public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi,bool EYKS)
+        public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi, bool EYKS)
         {
             ArrayList atananDugumIDListesi = new ArrayList();
             StringBuilder sonuc = new StringBuilder("");

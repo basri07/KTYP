@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KTYP
 {
@@ -301,7 +299,7 @@ namespace KTYP
                     command.Parameters["@Distance"].Value = 0;
                     command.Parameters["@Shortest_Path"].Value = "";
                     command.ExecuteNonQuery();
-                   
+
                     PrintPath(graph, i, j);
                 }
             }
@@ -313,9 +311,9 @@ namespace KTYP
         {
             SqlConnection baglanti = new SqlConnection("Data Source=BASRICHE\\BASRICHE;User ID=sa;Password=InnovaSql!.;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             //Console.Write(
-                //"[{0} , {1}]: ",
-               // sourceNode,
-                //destinationNode);
+            //"[{0} , {1}]: ",
+            // sourceNode,
+            //destinationNode);
 
             var path = DijkstraWithoutQueue.DijkstraAlgorithm(graph, sourceNode, destinationNode);
 
@@ -338,7 +336,7 @@ namespace KTYP
 
                 var formattedPath = string.Join(",", path);
                 //Console.WriteLine("{0} {1}", formattedPath, pathLength);
-                
+
                 string SqlUpdate1 = "UPDATE KTYP..KTYP_FULL_SHORTEST_PATH SET Shortest_Path='" + formattedPath + "' ,Distance=" + pathLength + "WHERE Nodes_I =" + sourceNode + " and Nodes_J=" + destinationNode + "";
                 baglanti.Open();
                 SqlCommand SqlUpdatecmd1 = new SqlCommand(SqlUpdate1, baglanti);

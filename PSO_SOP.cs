@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 
 namespace KTYP
@@ -19,27 +16,27 @@ namespace KTYP
 
         UygunCozum1 SopU;
         UzaklikHesapla UH;
-       
+
         public PSO_SOP(SqlConnection baglanti, SOPAtanabilirListeGuncelle sopk, string dataId) : base(baglanti, sopk, dataId)
         {
             this.baglanti = baglanti;
             this.dataId = dataId;
             this.sopk = sopk;
             this.SopU = new UygunCozum1();
-            this.UH = new UzaklikHesapla(baglanti,sopk,dataId);
+            this.UH = new UzaklikHesapla(baglanti, sopk, dataId);
         }
-        public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi,bool EYKS)
+        public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi, bool EYKS)
         {
             throw new NotImplementedException();
-            
+
         }
-        public void psoSOP(string dataID, int ParcacikSayisi, int iterasyonSayisi,bool EYKS,int LastResult)
+        public void psoSOP(string dataID, int ParcacikSayisi, int iterasyonSayisi, bool EYKS, int LastResult)
         {
             List<OnculMatrisi> onculMatrisi = this.OnculMatrisi();
             SOP_RASSAL sopr = new SOP_RASSAL(baglanti, sopk, dataID);
             int nodeCount = sopr.NodeCount();
-            int Gi=0;
-            int Gk=0;
+            int Gi = 0;
+            int Gk = 0;
             List<string[]> Sonuc = new List<string[]>();
             //Parcacik o anki Pozisyon
             int[,] PPozition = new int[ParcacikSayisi, nodeCount];
@@ -62,7 +59,7 @@ namespace KTYP
             Random rastgeleHizMiktari = new Random();
             double ilkhizmiktari = (nodeCount / 2);
             var listnodes = new List<int>();
-            var Phiz = new int[ParcacikSayisi,nodeCount];
+            var Phiz = new int[ParcacikSayisi, nodeCount];
             ArrayList PPozitionList = new ArrayList();
             Stopwatch PSOSureHesapla = new Stopwatch();
             Stopwatch BaslangıcSureHesapla = new Stopwatch();
@@ -76,12 +73,12 @@ namespace KTYP
                     //ilk iterasyonda Parcacik Sayisi Kadar RASTSAL Çözüm Üret
                     if (k == 0)
                     {
-                        if(i==0)
-                        { 
+                        if (i == 0)
+                        {
                             BaslangıcSureHesapla.Start();
                         }
                         ArrayList atanabilirDugumIDListesi = sopr.AtabilirDugumIdListele();
-                        String sonuc = sopr.SOPCoz(nodeCount, atanabilirDugumIDListesi,EYKS);
+                        String sonuc = sopr.SOPCoz(nodeCount, atanabilirDugumIDListesi, EYKS);
                         //MessageBox.Show(" " + sonuc + " ");
                         var a = sonuc.Split(" ");
                         Sonuc.Add(a);
@@ -94,8 +91,8 @@ namespace KTYP
                             Phiz[i, j] = 0;
                             PPBPozition[i, j] = Dugumler[j];
                         }
-                        if(i==ParcacikSayisi-1)
-                        { 
+                        if (i == ParcacikSayisi - 1)
+                        {
                             BaslangıcSureHesapla.Stop();
                             TimeSpan BHesaplananZaman = BaslangıcSureHesapla.Elapsed;
                             string BaslangıcSure = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
@@ -119,10 +116,10 @@ namespace KTYP
                             for (int j = 0; j < nodeCount; j++)
                             {
                                 GBPozisyon[j] = PPozition[i, j];
-                                
+
                             }
                         }
-                        
+
                         double alfa = Alfarandom.NextDouble();
                         double beta = 1 - alfa;
                         //Vi(k+1) = w.Vi(k) + alfa*(Particle(i)PBP-Particle(ik)Pozition) +beta*(GlobalBestPoz-Particle(ik)Pozition)
@@ -177,8 +174,8 @@ namespace KTYP
                     }
                     else
                     {
-                        StringBuilder sbHiz = new StringBuilder("HIZ\ni.parçacığın  j. indeksinde bulunan değeri Phiz[i,j]=çıkan sonuca insert et\n"+i.ToString()+"PARÇACIK\n"+k.ToString()+"İTERASYON\n");
-                        StringBuilder sbPozition_i = new StringBuilder("Pozition_i[j]\n" + i.ToString()+" PARÇACIK\n"+k.ToString()+"İTERASYON\n");
+                        StringBuilder sbHiz = new StringBuilder("HIZ\ni.parçacığın  j. indeksinde bulunan değeri Phiz[i,j]=çıkan sonuca insert et\n" + i.ToString() + "PARÇACIK\n" + k.ToString() + "İTERASYON\n");
+                        StringBuilder sbPozition_i = new StringBuilder("Pozition_i[j]\n" + i.ToString() + " PARÇACIK\n" + k.ToString() + "İTERASYON\n");
                         StringBuilder sbSonuc = new StringBuilder("SONUC\n");
                         sbPozition_i.AppendLine("HIZ EKLENMEMİŞ\n");
                         ArrayList Pozition_i = new ArrayList();
@@ -202,21 +199,21 @@ namespace KTYP
                                 }
                                 if (Phiz[i, j] > j)
                                 {
-                                    Pozition_i.Insert(Phiz[i, j]+1, PPozition[i, j]);
+                                    Pozition_i.Insert(Phiz[i, j] + 1, PPozition[i, j]);
                                     Pozition_i.RemoveAt(j);
                                 }
                             }
 
                         }
                         //Uygun Çözüme Çevir
-                        Pozition_i = SopU.UygunCozum(Pozition_i, onculMatrisi,nodeCount);
+                        Pozition_i = SopU.UygunCozum(Pozition_i, onculMatrisi, nodeCount);
                         //Uzaklik Hesapla
-                        PFV[i] = UH.UzaklikHesabi(Pozition_i); 
-                        sbPozition_i.Append(" UYGUN ÇÖZÜM Pozition_i[j]\n" + i.ToString()+" PARÇACIK\n"+k.ToString()+"İTERASYON\n");
+                        PFV[i] = UH.UzaklikHesabi(Pozition_i);
+                        sbPozition_i.Append(" UYGUN ÇÖZÜM Pozition_i[j]\n" + i.ToString() + " PARÇACIK\n" + k.ToString() + "İTERASYON\n");
                         //Uygun Çözümü Güncelle Global en iyi ve kişisel en iyiler varsa güncelle
                         for (int j = 0; j < nodeCount; j++)
                         {
-                            int Node= Convert.ToInt32(Pozition_i[j]);
+                            int Node = Convert.ToInt32(Pozition_i[j]);
                             PPozition[i, j] = Node;
                             Phiz[i, j] = 0;
                             sbPozition_i.Append(" " + i + "," + +j + " = " + Pozition_i[j] + "\n");
@@ -225,7 +222,7 @@ namespace KTYP
                                 PPBPozition[i, j] = Node;
                                 PPBFV[i] = PFV[i];
                             }
-                            if (PFV[i]<GBFV)
+                            if (PFV[i] < GBFV)
                             {
                                 GBFV = PFV[i];
                                 GBPozisyon[j] = Node;
@@ -234,8 +231,8 @@ namespace KTYP
                             }
                         }
                         //Hız Hesapla
-                        if(k!=nodeCount-1)
-                        { 
+                        if (k != nodeCount - 1)
+                        {
                             int P = 0;
                             int G = 0;
                             ArrayList PIndexi = new ArrayList();
@@ -244,30 +241,30 @@ namespace KTYP
                             ArrayList GIndexJ = new ArrayList();
                             for (int j = 0; j < nodeCount; j++)
                             {
-                                if (PPBPozition[i, j] != GBPozisyon[j]&&PIndexJ.Contains(j)==false)
+                                if (PPBPozition[i, j] != GBPozisyon[j] && PIndexJ.Contains(j) == false)
                                 {
                                     G++;
                                     GIndexi.Add(Pozition_i.IndexOf(GBPozisyon[j]));
                                     GIndexJ.Add(j);
                                 }
-                                if (PPozition[i,j]!=PPBPozition[i,j] && GIndexJ.Contains(j)==false)
+                                if (PPozition[i, j] != PPBPozition[i, j] && GIndexJ.Contains(j) == false)
                                 {
                                     P++;
                                     PIndexi.Add(Pozition_i.IndexOf(PPBPozition[i, j]));
                                     PIndexJ.Add(j);
                                 }
                             }
-                            double Alfa = (rastgeleHizMiktari.Next(50, 100))/(100);
+                            double Alfa = (rastgeleHizMiktari.Next(50, 100)) / (100);
                             double Beta = 1 - Alfa;
                             int GHizMik = (int)Math.Ceiling(Alfa * G);
                             int PhizMik = (int)Math.Floor(Alfa * P);
                             int ToplamHizMik = GHizMik + PhizMik;
-                            for (int f = 0; f < G-GHizMik; f++)
+                            for (int f = 0; f < G - GHizMik; f++)
                             {
                                 GIndexi.RemoveAt(GIndexi.Count - 1);
                                 GIndexJ.RemoveAt(GIndexJ.Count - 1);
                             }
-                            for (int f = 0; f < P - P-PhizMik; f++)
+                            for (int f = 0; f < P - P - PhizMik; f++)
                             {
                                 PIndexi.RemoveAt(PIndexi.Count - 1);
                                 PIndexJ.RemoveAt(PIndexJ.Count - 1);
@@ -282,18 +279,18 @@ namespace KTYP
                                 int IndexJ = Convert.ToInt32(GIndexJ[j]);
                                 int left = 0;
                                 int right = 0;
-                                for (int f=j+1  ; f < ToplamHizMik; f++)
+                                for (int f = j + 1; f < ToplamHizMik; f++)
                                 {
-                                    if(Convert.ToInt32(GIndexi[f])>IndexJ&& Convert.ToInt32(GIndexJ[f])<=IndexJ)
+                                    if (Convert.ToInt32(GIndexi[f]) > IndexJ && Convert.ToInt32(GIndexJ[f]) <= IndexJ)
                                     {
                                         right++;
                                     }
-                                    if(IndexJ>Convert.ToInt32(GIndexi[f])&& Convert.ToInt32(GIndexJ[f]) > IndexJ)
+                                    if (IndexJ > Convert.ToInt32(GIndexi[f]) && Convert.ToInt32(GIndexJ[f]) > IndexJ)
                                     {
                                         left++;
                                     }
                                 }
-                                int gPHiz = j+(right - left);
+                                int gPHiz = j + (right - left);
 
                                 Phiz[i, Convert.ToInt32(GIndexi[j])] = gPHiz;
                             }
@@ -309,7 +306,7 @@ namespace KTYP
             //Show.Append("En iyi Parçacık" + Gi.ToString()+"En iyi İterasyon"+Gk.ToString()+"\n");
             for (int j = 0; j < nodeCount; j++)
             {
-                Show.Append(GBPozisyon[j].ToString()+"\n");
+                Show.Append(GBPozisyon[j].ToString() + "\n");
             }
             Show.Append(GBFV.ToString());
             #region Log Dosyası
@@ -322,7 +319,7 @@ namespace KTYP
             #endregion
 
             //MessageBox.Show(Show.ToString());
-            string SqlUpdate1 = "UPDATE KTYP..SONUCLAR SET ENIYI_PARCACIK=" + Gi + ",ENIYI_ITERASYON=" +Gk+",GOSTERIM='"+Show.ToString()+"',UZAKLIK="+GBFV+" WHERE COZUM_ID =" + LastResult + "";
+            string SqlUpdate1 = "UPDATE KTYP..SONUCLAR SET ENIYI_PARCACIK=" + Gi + ",ENIYI_ITERASYON=" + Gk + ",GOSTERIM='" + Show.ToString() + "',UZAKLIK=" + GBFV + " WHERE COZUM_ID =" + LastResult + "";
             baglanti.Open();
             SqlCommand SqlUpdatecmd1 = new SqlCommand(SqlUpdate1, baglanti);
             SqlUpdatecmd1.ExecuteNonQuery();
@@ -343,9 +340,9 @@ namespace KTYP
             list[indexB] = tmp;
             return list;
         }
-     
+
     }
     #endregion
-    
+
 }
 

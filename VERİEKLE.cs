@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Collections;
-using System.Configuration;
-using System.Drawing.Imaging;
-using MessagingToolkit.QRCode.Codec;
-using MessagingToolkit.QRCode.Codec.Data;
 
 
 namespace KTYP
@@ -150,13 +140,13 @@ namespace KTYP
         {
             txtVeriEkleme.BookTxtToSQL(BookTxtAddress_TextBox.Text, TtoSql_QRCode_pictureBox.Image);
         }
-        
+
 
         private void BookFill_Button_Click_1(object sender, EventArgs e)
         {
             txtVeriEkleme.BookFillToDataGridView(BookInsertGW);
         }
-       
+
         private void BookInsert_Button_Click(object sender, EventArgs e)
         {
             txtVeriEkleme.BookInsertToSQL(BookCode_TextBox.Text, BookYear_TextBox.Text, BookName_TextBox.Text, AuthorName_TextBox.Text, BookshelfID_TextBox.Text, BookCode_pictureBox.Image);
@@ -182,7 +172,7 @@ namespace KTYP
 
         private void BookDelete_Button_Click(object sender, EventArgs e)
         {
-            
+
             foreach (DataGridViewRow drow in BookInsertGW.SelectedRows)  //Seçili Satırları Silme
             {
 #pragma warning disable CS8600 // Null sabit değeri veya olası null değeri, boş değer atanamaz türe dönüştürülüyor.
@@ -215,11 +205,11 @@ namespace KTYP
         private void BookUpdate_Button_Click(object sender, EventArgs e)
         {
             int SelectedArea = BookInsertGW.SelectedCells[0].RowIndex;
-            int Book_ID =(int) BookInsertGW.Rows[SelectedArea].Cells[0].Value;
+            int Book_ID = (int)BookInsertGW.Rows[SelectedArea].Cells[0].Value;
             txtVeriEkleme.BookUpdateSQL
                 (Book_ID, BookCode_TextBox.Text,
                 BookYear_TextBox.Text,
-                BookName_TextBox.Text, 
+                BookName_TextBox.Text,
                 AuthorName_TextBox.Text,
                 BookshelfID_TextBox.Text, BookCode_pictureBox.Image);
             txtVeriEkleme.BookFilterSQLtoDataGridView(BookCode_TextBox.Text, BookYear_TextBox.Text, BookName_TextBox.Text, AuthorName_TextBox.Text, BookshelfID_TextBox.Text, BookInsertGW);

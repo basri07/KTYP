@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MessagingToolkit.QRCode.Codec;
+using System;
+using System.Collections;
+using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using System.Data;
-using System.Collections;
-using System.Configuration;
-using System.Drawing.Imaging;
-using MessagingToolkit.QRCode.Codec;
-using MessagingToolkit.QRCode.Codec.Data;
-using System.Drawing;
 
 namespace KTYP
 {
@@ -23,7 +16,7 @@ namespace KTYP
         SqlConnection Conn = ConnectionSQL.SqlConnection();
 
 
-        
+
         public string AdresTxt { get; set; }
         public string SQLSorgu { get; set; }
         public string AdresXlsx { get; set; }
@@ -35,7 +28,6 @@ namespace KTYP
             AdresXlsx = "";
 
         }
-
         public void SOPTxtToSQL()
         {
             SqlCommand komut;
@@ -43,10 +35,7 @@ namespace KTYP
             // sqlDataAdapter;
             String AdresText = AdresTxt;
             String strFile = File.ReadAllText(AdresText);
-
-
             strFile = strFile.Replace("   ", " ");
-
             File.WriteAllText(AdresTxt, strFile);
             strFile = strFile.Replace("  ", " ");
             File.WriteAllText(AdresTxt, strFile);
@@ -77,7 +66,6 @@ namespace KTYP
             }
             else
             {
-
 
                 dr.Close();
 
@@ -239,11 +227,9 @@ namespace KTYP
                 MemoryStream stream = new MemoryStream();
                 Barcode.Save(stream, System.Drawing.Imaging.ImageFormat.Jpeg);
                 byte[] pic = stream.ToArray();
-
                 komut.Parameters.AddWithValue("@Book_Barcode", pic);
                 komut.ExecuteNonQuery();
                 Conn.Close();
-
             }
 
         }
@@ -281,7 +267,7 @@ namespace KTYP
             komut.ExecuteNonQuery();
             Conn.Close();
         }
-        public void BookUpdateSQL(int Book_ID,string Code, string BookYear, string BookName, string AuthorName, string BookshelfID, Image Barcode)
+        public void BookUpdateSQL(int Book_ID, string Code, string BookYear, string BookName, string AuthorName, string BookshelfID, Image Barcode)
         {
             SqlCommand komut;
             string sorgu = "UPDATE KTYP.. KTYP_BOOKS_DATA SET  Book_Code='" + Code + "' , Book_Release_Year ='" + BookYear + "' , Book_Name = '" + BookName + "' , Author_Name = '" + AuthorName + "' , Bookshelf = '" + BookshelfID + "',Book_Barcode=@Book_Barcode WHERE Book_ID =@Book_ID";
