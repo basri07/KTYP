@@ -1,1 +1,1 @@
-# KTYP
+# Kitap Toplama ve Yerleştirme Problemi(KTYP)
