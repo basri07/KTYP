@@ -8,7 +8,11 @@ namespace KTYP
 {
     public class UzaklikMatrisi : ICloneable
     {
-
+        public string DATA_ID { get; set; }
+        public string DATA_ADI { get; set; }
+        public int DUGUM_I { get; set; }
+        public int DUGUM_J { get; set; }
+        public decimal UZAKLIK { get; set; }
         public object Clone()
         {
             return this.MemberwiseClone();
@@ -27,11 +31,5 @@ namespace KTYP
             this.DUGUM_J = DUGUM_J;
             this.UZAKLIK = UZAKLIK;
         }
-        public string DATA_ID { get; set; }
-        public string DATA_ADI { get; set; }
-
-        public int DUGUM_I { get; set; }
-        public int DUGUM_J { get; set; }
-        public decimal UZAKLIK { get; set; }
     }
 }

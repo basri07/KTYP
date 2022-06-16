@@ -9,6 +9,7 @@ using System.Xml.Linq;
 
 namespace KTYP
 {
+    //Bu sınıf SQL bağlantı bilgisini XML dosyasından okur
     public partial class ConnectionSQL
     {
         public ConnectionSQL()
@@ -17,7 +18,6 @@ namespace KTYP
         }
         public static SqlConnectionStringBuilder SQLCONN()
         {
-            
             XDocument xd = XDocument.Load("C:\\KTYP\\config.xml");
             SqlConnectionStringBuilder conn = new SqlConnectionStringBuilder();
 #pragma warning disable CS8602 // Olası bir null başvurunun başvurma işlemi.
@@ -32,7 +32,6 @@ namespace KTYP
             conn.MultiSubnetFailover = Convert.ToBoolean(xd.Element("sql").Element("MultiSubnetFailover").Value);
 #pragma warning restore CS8602 // Olası bir null başvurunun başvurma işlemi.
             return conn;
-            
         }
         public static SqlConnection SqlConnection ()
         {

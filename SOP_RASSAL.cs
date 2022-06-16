@@ -18,10 +18,8 @@ namespace KTYP
             this.baglanti = baglanti;
             this.dataId = dataId;
             this.sopk = sopk;
-            this.UH = new UzaklikHesapla(baglanti,sopk,dataId);
-            
+            this.UH = new UzaklikHesapla(baglanti,sopk,dataId);   
         }
-
         public override string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi,bool EYKS)
         {
             ArrayList atananDugumIDListesi = new ArrayList();

@@ -14,11 +14,9 @@ namespace KTYP
         SqlCommand komut = new SqlCommand();
         public int NodeC { get; set; }
         public int AtananID { get; set; }
-
         public SOPAtanabilirListeGuncelle()
         {
         }
-
         public void OnculKontrol(string Data_ID, int item, ArrayList AtananArray, ArrayList AtanabilirArray)
         {
             int AtanmısSayisi = AtananArray.Count;
@@ -72,8 +70,6 @@ namespace KTYP
                 
                     AtanabilirArray.Add(Convert.ToInt32(dr[0]));
                     //a += +Convert.ToInt32(dr[0]) + " ";
-                
-
             }
             dr.Close();
             baglanti.Close();

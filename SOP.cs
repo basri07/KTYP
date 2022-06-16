@@ -21,9 +21,6 @@ namespace KTYP
             this.dataId = dataId;
             this.sopk = sopk;
         }
-
-
-
         public List<OnculMatrisi> OnculMatrisi()
         {
             List<OnculMatrisi> Matris = new List<OnculMatrisi>();
@@ -112,7 +109,6 @@ namespace KTYP
             return atanabilirDugumIDListesi;
             #endregion
         }
-
         public abstract string SOPCoz(int nodeCount, ArrayList atanabilirDugumIDListesi,bool EYKS);
     }
 }

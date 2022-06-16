@@ -297,7 +297,6 @@ namespace KTYP
             Conn.Open();
             komut = new SqlCommand(sorgu, Conn);
             komut.Parameters.AddWithValue("@Book_ID", Book_ID);
-           
             komut.Parameters.AddWithValue("@Book_Barcode", pic);
             komut.ExecuteNonQuery();
             Conn.Close();
