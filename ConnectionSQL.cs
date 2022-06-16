@@ -9,6 +9,7 @@ using System.Xml.Linq;
 
 namespace KTYP
 {
+    //Bu sınıf SQL bağlantı bilgisini XML dosyasından okur
     public partial class ConnectionSQL
     {
         public ConnectionSQL()

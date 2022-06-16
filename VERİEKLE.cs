@@ -68,7 +68,7 @@ namespace KTYP
             int result = da.Fill(ds);
             //Bir TXT dosyasına 192 satırın bilgilerini yazıyor. O yüzden ilk 100 düğümün bilgilerini DistanceMatrix0_100.txt dosyasına, diğer kalan 94 düğümü DistanceMatrix100_194.txt dosyasına yazdırıyorum
             string DistanceMatrix = "";
-            StreamWriter Yaz = new StreamWriter("C:\\Users\\hbasr\\OneDrive\\Masaüstü\\YLKODLAMA\\KTYP-1\\Data\\KTYP_layout_plan\\DistanceMatrix0_100.txt");
+            StreamWriter Yaz = new StreamWriter("C:\\Users\\hbasr\\OneDrive\\Masaüstü\\YLKODLAMA\\KTYP-1\\Data\\DistanceMatrix0_100.txt");
             int k = 0;
             for (int i = 0; i < 100; i++)
             {
@@ -95,7 +95,7 @@ namespace KTYP
                 }
             }
             Yaz.Close();
-            StreamWriter Yaz1 = new StreamWriter("C:\\Users\\hbasr\\OneDrive\\Masaüstü\\YLKODLAMA\\KTYP-1\\Data\\KTYP_layout_plan\\DistanceMatrix100_194.txt");
+            StreamWriter Yaz1 = new StreamWriter("C:\\Users\\hbasr\\OneDrive\\Masaüstü\\YLKODLAMA\\KTYP-1\\Data\\DistanceMatrix100_194.txt");
             for (int i = 0; i < 95; i++)
             {
                 for (int j = 0; j < 195; j++)
@@ -224,7 +224,5 @@ namespace KTYP
                 BookshelfID_TextBox.Text, BookCode_pictureBox.Image);
             txtVeriEkleme.BookFilterSQLtoDataGridView(BookCode_TextBox.Text, BookYear_TextBox.Text, BookName_TextBox.Text, AuthorName_TextBox.Text, BookshelfID_TextBox.Text, BookInsertGW);
         }
-
-       
     }
 }
