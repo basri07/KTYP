@@ -13,10 +13,8 @@ namespace KTYP
 {
     public class PSO_SOP : SOP
     {
-
         UygunCozum1 SopU;
         UzaklikHesapla UH;
-
         public PSO_SOP(SqlConnection baglanti, SOPAtanabilirListeGuncelle sopk, string dataId) : base(baglanti, sopk, dataId)
         {
             this.baglanti = baglanti;
@@ -116,10 +114,8 @@ namespace KTYP
                             for (int j = 0; j < nodeCount; j++)
                             {
                                 GBPozisyon[j] = PPozition[i, j];
-
                             }
                         }
-
                         double alfa = Alfarandom.NextDouble();
                         double beta = 1 - alfa;
                         //Vi(k+1) = w.Vi(k) + alfa*(Particle(i)PBP-Particle(ik)Pozition) +beta*(GlobalBestPoz-Particle(ik)Pozition)
@@ -179,12 +175,12 @@ namespace KTYP
                         StringBuilder sbSonuc = new StringBuilder("SONUC\n");
                         sbPozition_i.AppendLine("HIZ EKLENMEMİŞ\n");
                         ArrayList Pozition_i = new ArrayList();
+
                         for (int j = 0; j < nodeCount; j++)
                         {
                             sbHiz.Append(" [" + i.ToString() + "," + j.ToString() + "] = " + Phiz[i, j] + "\n");
                             Pozition_i.Add(PPozition[i, j]);
                             sbPozition_i.Append(" " + i + "," + +j + " = " + Pozition_i[j] + "\n");
-
                         }
                         //Hız Ekle
                         sbPozition_i.AppendLine("HIZ EKLENMİŞ\n");

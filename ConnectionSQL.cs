@@ -17,7 +17,6 @@ namespace KTYP
             SqlConnectionStringBuilder conn = new SqlConnectionStringBuilder();
 #pragma warning disable CS8602 // Olası bir null başvurunun başvurma işlemi.
             conn.DataSource = xd.Element("sql").Element("DataSource").Value.ToString();
-
             conn.UserID = xd.Element("sql").Element("UserID").Value.ToString();
             conn.Password = xd.Element("sql").Element("Password").Value.ToString();
             conn.ConnectTimeout = Convert.ToInt32(xd.Element("sql").Element("ConnectTimeout").Value);
