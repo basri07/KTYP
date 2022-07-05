@@ -66,6 +66,16 @@
             this.KTYPExcel_Sec_Button = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.BookTxtAddress_TextBox = new System.Windows.Forms.TextBox();
+            this.KTYPRPO = new System.Windows.Forms.TabPage();
+            this.BookshelfCount_numericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.TableCount_numericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.BooksCount_TextBox = new System.Windows.Forms.TextBox();
+            this.DMBooksCount_TextBox = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.SOP_MATRIX.SuspendLayout();
             this.SOPPage.SuspendLayout();
             this.KTYPPage.SuspendLayout();
@@ -74,6 +84,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.BookCode_pictureBox)).BeginInit();
             this.BarcodeGenerator.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TtoSql_QRCode_pictureBox)).BeginInit();
+            this.KTYPRPO.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BookshelfCount_numericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TableCount_numericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // SOP_MATRIX
@@ -82,6 +95,7 @@
             this.SOP_MATRIX.Controls.Add(this.KTYPPage);
             this.SOP_MATRIX.Controls.Add(this.KitapEkle);
             this.SOP_MATRIX.Controls.Add(this.BarcodeGenerator);
+            this.SOP_MATRIX.Controls.Add(this.KTYPRPO);
             this.SOP_MATRIX.Location = new System.Drawing.Point(-3, 0);
             this.SOP_MATRIX.Name = "SOP_MATRIX";
             this.SOP_MATRIX.SelectedIndex = 0;
@@ -475,6 +489,123 @@
             this.BookTxtAddress_TextBox.Size = new System.Drawing.Size(360, 23);
             this.BookTxtAddress_TextBox.TabIndex = 4;
             // 
+            // KTYPRPO
+            // 
+            this.KTYPRPO.Controls.Add(this.DMBooksCount_TextBox);
+            this.KTYPRPO.Controls.Add(this.label12);
+            this.KTYPRPO.Controls.Add(this.BooksCount_TextBox);
+            this.KTYPRPO.Controls.Add(this.label11);
+            this.KTYPRPO.Controls.Add(this.TableCount_numericUpDown);
+            this.KTYPRPO.Controls.Add(this.label10);
+            this.KTYPRPO.Controls.Add(this.BookshelfCount_numericUpDown);
+            this.KTYPRPO.Controls.Add(this.label9);
+            this.KTYPRPO.Controls.Add(this.button1);
+            this.KTYPRPO.Location = new System.Drawing.Point(4, 24);
+            this.KTYPRPO.Name = "KTYPRPO";
+            this.KTYPRPO.Size = new System.Drawing.Size(1998, 712);
+            this.KTYPRPO.TabIndex = 4;
+            this.KTYPRPO.Text = "RASTSAL PROBLEM OLUŞTUR";
+            this.KTYPRPO.UseVisualStyleBackColor = true;
+            // 
+            // BookshelfCount_numericUpDown
+            // 
+            this.BookshelfCount_numericUpDown.Location = new System.Drawing.Point(11, 47);
+            this.BookshelfCount_numericUpDown.Maximum = new decimal(new int[] {
+            141,
+            0,
+            0,
+            0});
+            this.BookshelfCount_numericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.BookshelfCount_numericUpDown.Name = "BookshelfCount_numericUpDown";
+            this.BookshelfCount_numericUpDown.Size = new System.Drawing.Size(120, 23);
+            this.BookshelfCount_numericUpDown.TabIndex = 1;
+            this.BookshelfCount_numericUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(11, 29);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(63, 15);
+            this.label9.TabIndex = 1;
+            this.label9.Text = "RAF SAYISI";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(188, 47);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(241, 91);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "KTYP RASTSAL PROBLEM OLUŞTUR";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // TableCount_numericUpDown
+            // 
+            this.TableCount_numericUpDown.Location = new System.Drawing.Point(11, 108);
+            this.TableCount_numericUpDown.Maximum = new decimal(new int[] {
+            38,
+            0,
+            0,
+            0});
+            this.TableCount_numericUpDown.Name = "TableCount_numericUpDown";
+            this.TableCount_numericUpDown.Size = new System.Drawing.Size(120, 23);
+            this.TableCount_numericUpDown.TabIndex = 2;
+            this.TableCount_numericUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(11, 90);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(75, 15);
+            this.label10.TabIndex = 4;
+            this.label10.Text = "MASA SAYISI";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(11, 206);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(121, 15);
+            this.label11.TabIndex = 5;
+            this.label11.Text = "TOPLAM KİTAP SAYISI";
+            // 
+            // BooksCount_TextBox
+            // 
+            this.BooksCount_TextBox.Location = new System.Drawing.Point(11, 224);
+            this.BooksCount_TextBox.Name = "BooksCount_TextBox";
+            this.BooksCount_TextBox.Size = new System.Drawing.Size(117, 23);
+            this.BooksCount_TextBox.TabIndex = 3;
+            // 
+            // DMBooksCount_TextBox
+            // 
+            this.DMBooksCount_TextBox.Location = new System.Drawing.Point(11, 169);
+            this.DMBooksCount_TextBox.Name = "DMBooksCount_TextBox";
+            this.DMBooksCount_TextBox.Size = new System.Drawing.Size(117, 23);
+            this.DMBooksCount_TextBox.TabIndex = 6;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(11, 151);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(94, 15);
+            this.label12.TabIndex = 7;
+            this.label12.Text = "DM KİTAP SAYISI";
+            // 
             // VERİEKLE
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -495,6 +626,10 @@
             this.BarcodeGenerator.ResumeLayout(false);
             this.BarcodeGenerator.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TtoSql_QRCode_pictureBox)).EndInit();
+            this.KTYPRPO.ResumeLayout(false);
+            this.KTYPRPO.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BookshelfCount_numericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TableCount_numericUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -537,5 +672,15 @@
         private System.Windows.Forms.Button BookInsert_Button;
         private System.Windows.Forms.Button BookFill_Button;
         private System.Windows.Forms.Button BookFilter_Button;
+        private System.Windows.Forms.TabPage KTYPRPO;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.NumericUpDown BookshelfCount_numericUpDown;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.NumericUpDown TableCount_numericUpDown;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox BooksCount_TextBox;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox DMBooksCount_TextBox;
+        private System.Windows.Forms.Label label12;
     }
 }

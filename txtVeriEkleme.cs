@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace KTYP
@@ -287,6 +288,107 @@ namespace KTYP
             komut.ExecuteNonQuery();
             Conn.Close();
 
+        }
+        public void KTYPRastsalProblemOlustur(int BooksCount,int DmBooksCount , int BookshelfCount , int TablesCount)
+        {
+            SqlCommand komut;
+
+            //RAF SAYISINA GÖRE RASTSAL RAF ÜRET
+            string BookShelfRandomSQL = "SELECT TOP "+ BookshelfCount.ToString()+" Description FROM KTYP.. Nodes_Information WHERE Description like 'R%' ORDER BY NEWID()";
+            Conn.Open();
+            SqlDataAdapter da = new SqlDataAdapter(BookShelfRandomSQL, Conn);
+            DataSet ds = new DataSet();
+            int result = da.Fill(ds);
+            ArrayList RandomBookShelfList = new ArrayList();
+            StringBuilder BookShelfListSQL = new StringBuilder("(");
+            for (int i = 0; i < result; i++)
+            {
+                if (i==0)
+                {
+                    BookShelfListSQL.Append("'" + Convert.ToString(ds.Tables[0].Rows[i][0]) + "'");
+                    RandomBookShelfList.Add(Convert.ToString(ds.Tables[0].Rows[i][0]));
+                }
+                else
+                { 
+                    BookShelfListSQL.Append(",'"+Convert.ToString(ds.Tables[0].Rows[i][0])+"'");
+                    RandomBookShelfList.Add(Convert.ToString(ds.Tables[0].Rows[i][0]));
+                }
+            }
+            BookShelfListSQL.Append(")");
+            //ÜRETİLEN RAFLAR'a Kitap Sayısı miktarı kadar kitap üret.
+            string BookinTableRandomSQL = "SELECT TOP "+ BooksCount.ToString()+ " Book_ID,Bookshelf FROM KTYP.. KTYP_BOOKS_DATA WHERE Author_Name not like '' AND Bookshelf IN" + BookShelfListSQL+" ORDER BY NEWID()";
+            SqlDataAdapter da1 = new SqlDataAdapter(BookinTableRandomSQL, Conn);
+            DataSet ds1 = new DataSet();
+            int result1 = da1.Fill(ds1);
+            ArrayList RandomBookList = new ArrayList();
+            ArrayList BookshelfList = new ArrayList();
+            for (int i = 0; i < result1; i++)
+            {
+                RandomBookList.Add(Convert.ToString(ds1.Tables[0].Rows[i][0]));
+                BookshelfList.Add(Convert.ToString(ds1.Tables[0].Rows[i][1]));
+            }
+            //RASTSAL MASA MİKTARI KADAR MASA ÜRET
+            string TableRandomSQL = "SELECT TOP "+TablesCount.ToString()+ " Description FROM KTYP.. Nodes_Information WHERE Description not like'R%' AND Description <>'DM'  ORDER BY NEWID()";
+            SqlDataAdapter da2 = new SqlDataAdapter(TableRandomSQL, Conn);
+            DataSet ds2 = new DataSet();
+            int result2 = da2.Fill(ds2);
+            ArrayList RandomTableList = new ArrayList();
+            for (int i = 0; i < result2; i++)
+            {
+                RandomTableList.Add(Convert.ToString(ds2.Tables[0].Rows[i][0]));
+            }
+            //MASALARDA KİTAP DAĞIIMI
+            
+            ArrayList BooksCountTableRandomList = new ArrayList();
+            for (int i = 0; i < DmBooksCount; i++)
+            {
+                BooksCountTableRandomList.Add("DM");
+            }
+            int BooksinTableCount = BooksCount - DmBooksCount;
+            for (int i = 0; i < BooksinTableCount; i++)
+            {
+                Random Rnd = new Random();
+                int RndTableIndex = Rnd.Next(TablesCount);
+                BooksCountTableRandomList.Add(RandomTableList[RndTableIndex]);
+            }
+            string LastProblemIDSQL = "SELECT MAX(PROBLEM_ID) from KTYP..KTYP_PROBLEM";
+            SqlDataAdapter da3 = new SqlDataAdapter(LastProblemIDSQL, Conn);
+            DataSet ds3 = new DataSet();
+            int result3 = da3.Fill(ds3);
+            string LastProblemID;
+            string NewProblemID;
+            if (Convert.ToString(ds3.Tables[0].Rows[0][0])=="")
+            {
+                NewProblemID = "KTYP.B"+ BooksCount.ToString() +".N"+ Convert.ToString(TablesCount+BookshelfCount)+ ".T" + TablesCount.ToString()+".R"+ BookshelfCount.ToString()+".1";
+
+            }
+            else
+            {
+                LastProblemID = ds3.Tables[0].Rows[0][0].ToString();
+#pragma warning disable CS8600 // Null sabit değeri veya olası null değeri, boş değer atanamaz türe dönüştürülüyor.
+                string[] parcalar;
+#pragma warning disable CS8602 // Olası bir null başvurunun başvurma işlemi.
+                parcalar = LastProblemID.Split('.');
+#pragma warning disable CS8602 // Olası bir null başvurunun başvurma işlemi.
+                NewProblemID = parcalar[0] + ".B" + BooksCount.ToString() + ".N" + Convert.ToString(TablesCount + BookshelfCount) + ".T" + TablesCount.ToString() + ".R" + BookshelfCount.ToString()+".";
+                int ID = Convert.ToInt32(parcalar[5]) + 1;
+                NewProblemID += ID.ToString();
+
+            }
+#pragma warning disable CS8600 // Null sabit değeri veya olası null değeri, boş değer atanamaz türe dönüştürülüyor.
+
+
+            string InsertProblemSQL = "INSERT INTO KTYP.. KTYP_PROBLEM (PROBLEM_ID,Book_ID,Pickup_Node_Def,Delivery_Node_Def) VALUES(@PROBLEM_ID,@Book_ID,@Pickup_Node_Def,@Delivery_Node_Def)";
+            for (int i = 0; i < BooksCount; i++)
+            {
+                komut = new SqlCommand(InsertProblemSQL, Conn);
+                komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                komut.Parameters.AddWithValue("@Book_ID", RandomBookList[i]);
+                komut.Parameters.AddWithValue("@Pickup_Node_Def", BooksCountTableRandomList[i]);
+                komut.Parameters.AddWithValue("@Delivery_Node_Def", BookshelfList[i]);
+                komut.ExecuteNonQuery();
+            }
+            Conn.Close();
         }
     }
 }

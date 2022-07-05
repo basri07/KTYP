@@ -214,5 +214,15 @@ namespace KTYP
                 BookshelfID_TextBox.Text, BookCode_pictureBox.Image);
             txtVeriEkleme.BookFilterSQLtoDataGridView(BookCode_TextBox.Text, BookYear_TextBox.Text, BookName_TextBox.Text, AuthorName_TextBox.Text, BookshelfID_TextBox.Text, BookInsertGW);
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int BookShelfCount = Convert.ToInt32(BookshelfCount_numericUpDown.Value);
+            int TablesCount = Convert.ToInt32(TableCount_numericUpDown.Value);
+            int BooksCount = Convert.ToInt32(BooksCount_TextBox.Text);
+            int DmBooksCount = Convert.ToInt32(DMBooksCount_TextBox.Text);
+            txtVeriEkleme.KTYPRastsalProblemOlustur(BooksCount,DmBooksCount, BookShelfCount, TablesCount);
+
+        }
     }
 }
