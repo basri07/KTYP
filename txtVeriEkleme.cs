@@ -545,7 +545,7 @@ namespace KTYP
                 }
                 else
                 {
-                    string NodesInfSQLDM = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='"+Nodes[j].ToString()+"' AND Nodes_J_Def='DM'";
+                    string NodesInfSQLDM = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Nodes[j].ToString() + "' AND Nodes_J_Def='DM'";
                     SqlDataAdapter da5 = new SqlDataAdapter(NodesInfSQLDM, Conn);
                     DataSet ds5 = new DataSet();
                     int result5 = da5.Fill(ds5);
@@ -583,6 +583,69 @@ namespace KTYP
 
             komut.Parameters.AddWithValue("@Distance", 0);
             komut.Parameters.AddWithValue("@Shortest_Path", -1);
+            komut.ExecuteNonQuery();
+            //Masalardan Raflara öncelik ilişkisi düzenlemesi
+
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                for (int j = 0; j < Nodes.Count; j++)
+                {
+                    string SelectProblemSQL = "SELECT Pickup_Node_Def,Delivery_Node_Def,Pickup_Node,Delivery_Node,Distance,Shortest_Path FROM KTYP.. VW_KTYP_PROBLEM WHERE PROBLEM_ID='" + NewProblemID + "' AND Pickup_Node_Def ='" + Nodes[i].ToString() + "' AND Delivery_Node_Def ='" + Nodes[j].ToString() + "'";
+                    SqlDataAdapter da5 = new SqlDataAdapter(SelectProblemSQL, Conn);
+                    DataSet ds5 = new DataSet();
+                    int result5 = da5.Fill(ds5);
+
+
+                    if (result5 > 0)
+                    {
+                        string UptadeMatrisSenaryo1 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1,Shortest_Path=-1 WHERE PROBLEM_ID='" + NewProblemID + "' AND SENARYO='SENARYO.1' AND Node_I_Def='" + Nodes[j].ToString() + "' AND Node_J_Def='" + Nodes[i].ToString() + "'";
+                        komut = new SqlCommand(UptadeMatrisSenaryo1, Conn);
+                        komut.ExecuteNonQuery();
+                    }
+                    if (Nodes[j].ToString() != "DM" && Nodes[i].ToString() == "DM")
+                    {
+                        string UptadeMatrisSenaryo1 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1,Shortest_Path=-1 WHERE PROBLEM_ID='" + NewProblemID + "' AND SENARYO='SENARYO.1' AND Node_I_Def='" + Nodes[j].ToString() + "' AND Node_J_Def='DM'";
+                        komut = new SqlCommand(UptadeMatrisSenaryo1, Conn);
+                        komut.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            //SENARYO 2
+
+            string SelectMatrısS1 = "SELECT *FROM KTYP.. KTYP_PROBLEM_SENARYO_MATRIX  where SENARYO='SENARYO.1' AND PROBLEM_ID ='" + NewProblemID + "'  order by PROBLEM_ID,Node_I,Node_J ";
+            SqlDataAdapter da6 = new SqlDataAdapter(SelectMatrısS1, Conn);
+            DataSet ds6 = new DataSet();
+            int result6 = da6.Fill(ds6);
+
+            //Senaryo 1 den verileri getir ve senaryo 2 olarak ekle
+            for (int i = 0; i < result6; i++)
+            {
+
+                int Node_I = Convert.ToInt32(ds6.Tables[0].Rows[i][2]);
+                string Node_I_Def = ds6.Tables[0].Rows[i][3].ToString();
+                int Node_J = Convert.ToInt32(ds6.Tables[0].Rows[i][4]);
+                string Node_J_Def = ds6.Tables[0].Rows[i][5].ToString();
+                int Distance = Convert.ToInt32(ds6.Tables[0].Rows[i][6]);
+                string ShortestPath = ds6.Tables[0].Rows[i][7].ToString();
+
+                komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
+                komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
+
+                komut.Parameters.AddWithValue("@Node_I", Node_I);
+                komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
+
+                komut.Parameters.AddWithValue("@Node_J", Node_J);
+                komut.Parameters.AddWithValue("@Node_J_Def", Node_J_Def);
+
+                komut.Parameters.AddWithValue("@Distance", Distance);
+                komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
+                komut.ExecuteNonQuery();
+            }
+            //Senaryo 2 verilerinde tüm rafların tüm masalara olan uzaklığını -1 olarak güncelle.(Önce masalar sonra raflar ) ÖTDP
+            string UpdatePreS2 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1, Shortest_Path='-1' WHERE SENARYO='SENARYO.2' AND (Node_I_Def LIKE 'R%' AND Node_J_Def LIKE 'M%' ) AND PROBLEM_ID='" + NewProblemID + "'";
+            komut = new SqlCommand(UpdatePreS2, Conn);
             komut.ExecuteNonQuery();
             Conn.Close();
         }
