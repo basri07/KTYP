@@ -13,11 +13,7 @@ namespace KTYP
     public class txtVeriEkleme
     {
 
-
         SqlConnection Conn = ConnectionSQL.SqlConnection();
-
-
-
         public string AdresTxt { get; set; }
         public string SQLSorgu { get; set; }
         public string AdresXlsx { get; set; }
@@ -163,14 +159,11 @@ namespace KTYP
         public void BookTxtToSQL(string BookTxtAddress, Image Barcode)
         {
 
-
             SqlCommand komut;
             string sorgu = "INSERT INTO KTYP.. KTYP_BOOKS_DATA(Book_Code,Book_Release_Year,Book_Name,Author_Name,Bookshelf,Book_Barcode) VALUES (@Book_Code,@Book_Release_Year,@Book_Name,@Author_Name,@Bookshelf,@Book_Barcode)";
             // sqlDataAdapter;
             String AdresText = BookTxtAddress;
             String strFile = File.ReadAllText(AdresText);
-
-
             strFile = strFile.Replace("\t", "½");
             File.WriteAllText(AdresText, strFile);
             string[] lines = File.ReadAllLines(AdresText);
@@ -430,7 +423,48 @@ namespace KTYP
                     komut.ExecuteNonQuery();
                 }
             }
-            //SENARYO 1 SQL'e Aktar
+
+            //Senaryo 1 (GSP) ÇM veya TM dahil değil DM den alınan kitaplar doğrudan raflara
+            string ProblemtoSenaryo1 = "SELECT  DISTINCT Delivery_Node_Def FROM KTYP.. KTYP_PROBLEM where Pickup_Node_Def LIKE '%DM%' AND PROBLEM_ID ='"+NewProblemID+"'";
+            SqlDataAdapter da8 = new SqlDataAdapter(ProblemtoSenaryo1, Conn);
+            DataSet ds8 = new DataSet();
+            int result8 = da8.Fill(ds8);
+            ArrayList  S1senaryoRaf= new ArrayList();
+            S1senaryoRaf.Add("DM");
+            for (int i = 0; i < result8; i++)
+            {
+                S1senaryoRaf.Add(ds8.Tables[0].Rows[i][0].ToString());
+
+            }
+            for (int i = 0; i < S1senaryoRaf.Count; i++)
+            {
+                for (int j = 0; j < S1senaryoRaf.Count; j++)
+                {
+                    komut = new SqlCommand(InsertProblemSenaryo0Matrix, Conn);
+                    komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.1");
+
+                    string SelectRNodes = "SELECT * FROM KTYP..VW_KTYP_REQUIRED_NODES WHERE Nodes_I_Def = '" + S1senaryoRaf[i].ToString() + "' AND Nodes_J_Def = '" + S1senaryoRaf[j].ToString() + "'";
+                    SqlDataAdapter da4 = new SqlDataAdapter(SelectRNodes, Conn);
+                    DataSet ds4 = new DataSet();
+                    int result4 = da4.Fill(ds4);
+                    int Node_I = Convert.ToInt32(ds4.Tables[0].Rows[0][0]);
+                    int Node_J = Convert.ToInt32(ds4.Tables[0].Rows[0][1]);
+                    int Distance = Convert.ToInt32(ds4.Tables[0].Rows[0][4]);
+                    string ShortestPath = ds4.Tables[0].Rows[0][5].ToString();
+                    komut.Parameters.AddWithValue("@Node_I", Node_I);
+                    komut.Parameters.AddWithValue("@Node_I_Def", S1senaryoRaf[i].ToString());
+
+                    komut.Parameters.AddWithValue("@Node_J", Node_J);
+                    komut.Parameters.AddWithValue("@Node_J_Def", S1senaryoRaf[j].ToString());
+
+                    komut.Parameters.AddWithValue("@Distance", Distance);
+                    komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
+                    komut.ExecuteNonQuery();
+
+                }
+            }
+            //SENARYO 2 SQL'e Aktar( Eş zamanlı TM dahil)
 
             string InsertProblemSenaryo1Matrix = "INSERT INTO KTYP.. KTYP_PROBLEM_SENARYO_MATRIX (PROBLEM_ID,SENARYO, Node_I, Node_I_Def,Node_J,Node_J_Def,Distance,Shortest_Path) VALUES (@PROBLEM_ID,@SENARYO, @Node_I, @Node_I_Def,@Node_J,@Node_J_Def,@Distance,@Shortest_Path)";
             for (int i = 0; i < Nodes.Count; i++)
@@ -457,7 +491,7 @@ namespace KTYP
 
                         komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                         komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.1");
+                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
 
                         komut.Parameters.AddWithValue("@Node_I", Node_I);
                         komut.Parameters.AddWithValue("@Node_I_Def", Nodes[i].ToString());
@@ -479,7 +513,7 @@ namespace KTYP
 
                         komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                         komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.1");
+                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
 
                         komut.Parameters.AddWithValue("@Node_I", Node_I);
                         komut.Parameters.AddWithValue("@Node_I_Def", Nodes[i].ToString());
@@ -510,7 +544,7 @@ namespace KTYP
 
                 komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                 komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.1");
+                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
 
                 komut.Parameters.AddWithValue("@Node_I", Node_I);
                 komut.Parameters.AddWithValue("@Node_I_Def", "DummyDM");
@@ -531,7 +565,7 @@ namespace KTYP
 
                     komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                     komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.1");
+                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
 
                     komut.Parameters.AddWithValue("@Node_I", Node_I);
                     komut.Parameters.AddWithValue("@Node_I_Def", "DM");
@@ -557,7 +591,7 @@ namespace KTYP
 
                     komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                     komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.1");
+                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
 
                     komut.Parameters.AddWithValue("@Node_I", Node_I);
                     komut.Parameters.AddWithValue("@Node_I_Def", Nodes[j].ToString());
@@ -571,9 +605,10 @@ namespace KTYP
                 }
 
             }
+            //Dummy DM'nin Dummy Dm ye olan uzaklığı 0
             komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
             komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-            komut.Parameters.AddWithValue("@SENARYO", "SENARYO.1");
+            komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
 
             komut.Parameters.AddWithValue("@Node_I", 1000);
             komut.Parameters.AddWithValue("@Node_I_Def", "DummyDM");
@@ -584,7 +619,7 @@ namespace KTYP
             komut.Parameters.AddWithValue("@Distance", 0);
             komut.Parameters.AddWithValue("@Shortest_Path", -1);
             komut.ExecuteNonQuery();
-            //Masalardan Raflara öncelik ilişkisi düzenlemesi
+            //Masalardan Raflara öncelik ilişkisi düzenlemesi eğer KTYP_PROBLEM datasında ilgili masada ilgili rafın kitabı varsa uzaklığı -1 olarak güncelle . Tüm düğümlerin DM masasına olan uzaklıkları -1 yap
 
             for (int i = 0; i < Nodes.Count; i++)
             {
@@ -598,27 +633,27 @@ namespace KTYP
 
                     if (result5 > 0)
                     {
-                        string UptadeMatrisSenaryo1 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1,Shortest_Path=-1 WHERE PROBLEM_ID='" + NewProblemID + "' AND SENARYO='SENARYO.1' AND Node_I_Def='" + Nodes[j].ToString() + "' AND Node_J_Def='" + Nodes[i].ToString() + "'";
+                        string UptadeMatrisSenaryo1 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1,Shortest_Path=-1 WHERE PROBLEM_ID='" + NewProblemID + "' AND SENARYO='SENARYO.2' AND Node_I_Def='" + Nodes[j].ToString() + "' AND Node_J_Def='" + Nodes[i].ToString() + "'";
                         komut = new SqlCommand(UptadeMatrisSenaryo1, Conn);
                         komut.ExecuteNonQuery();
                     }
                     if (Nodes[j].ToString() != "DM" && Nodes[i].ToString() == "DM")
                     {
-                        string UptadeMatrisSenaryo1 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1,Shortest_Path=-1 WHERE PROBLEM_ID='" + NewProblemID + "' AND SENARYO='SENARYO.1' AND Node_I_Def='" + Nodes[j].ToString() + "' AND Node_J_Def='DM'";
+                        string UptadeMatrisSenaryo1 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1,Shortest_Path=-1 WHERE PROBLEM_ID='" + NewProblemID + "' AND SENARYO='SENARYO.2' AND Node_I_Def='" + Nodes[j].ToString() + "' AND Node_J_Def='DM'";
                         komut = new SqlCommand(UptadeMatrisSenaryo1, Conn);
                         komut.ExecuteNonQuery();
                     }
                 }
             }
 
-            //SENARYO 2
+            //SENARYO 3 önce masalar sonra raflar ÖTSD
 
-            string SelectMatrısS1 = "SELECT *FROM KTYP.. KTYP_PROBLEM_SENARYO_MATRIX  where SENARYO='SENARYO.1' AND PROBLEM_ID ='" + NewProblemID + "'  order by PROBLEM_ID,Node_I,Node_J ";
+            string SelectMatrısS1 = "SELECT *FROM KTYP.. KTYP_PROBLEM_SENARYO_MATRIX  where SENARYO='SENARYO.2' AND PROBLEM_ID ='" + NewProblemID + "'  order by PROBLEM_ID,Node_I,Node_J ";
             SqlDataAdapter da6 = new SqlDataAdapter(SelectMatrısS1, Conn);
             DataSet ds6 = new DataSet();
             int result6 = da6.Fill(ds6);
 
-            //Senaryo 1 den verileri getir ve senaryo 2 olarak ekle
+            //Senaryo 2 den verileri getir ve senaryo 3 olarak ekle
             for (int i = 0; i < result6; i++)
             {
 
@@ -631,7 +666,7 @@ namespace KTYP
 
                 komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                 komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.2");
+                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.3");
 
                 komut.Parameters.AddWithValue("@Node_I", Node_I);
                 komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
@@ -643,8 +678,8 @@ namespace KTYP
                 komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                 komut.ExecuteNonQuery();
             }
-            //Senaryo 2 verilerinde tüm rafların tüm masalara olan uzaklığını -1 olarak güncelle.(Önce masalar sonra raflar ) ÖTDP
-            string UpdatePreS2 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1, Shortest_Path='-1' WHERE SENARYO='SENARYO.2' AND (Node_I_Def LIKE 'R%' AND Node_J_Def LIKE 'M%' ) AND PROBLEM_ID='" + NewProblemID + "'";
+            //Senaryo 3 verilerinde tüm rafların tüm masalara olan uzaklığını -1 olarak güncelle.(Önce masalar sonra raflar ) ÖTSD
+            string UpdatePreS2 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1, Shortest_Path='-1' WHERE SENARYO='SENARYO.3' AND (Node_I_Def LIKE 'R%' AND Node_J_Def LIKE 'M%' ) AND PROBLEM_ID='" + NewProblemID + "'";
             komut = new SqlCommand(UpdatePreS2, Conn);
             komut.ExecuteNonQuery();
             Conn.Close();
