@@ -752,7 +752,11 @@ namespace KTYP
             string UpdatePreS2 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1, Shortest_Path='-1' WHERE SENARYO='SENARYO.3' AND (Node_I_Def LIKE 'R%' AND Node_J_Def LIKE 'M%' ) AND PROBLEM_ID='" + NewProblemID + "'";
             komut = new SqlCommand(UpdatePreS2, Conn);
             komut.ExecuteNonQuery();
-            //Senaryo 4 TM dahil eş zamanlı
+            //Senaryo4 Senaryo2 ile aynı matrisi kullanabilir
+
+
+
+            //Senaryo 5 TM dahil eş zamanlı
             for (int i = 0; i < Nodes_TM.Count - 1; i++)
             {
                 for (int j = 0; j < Nodes_TM.Count - 1; j++)
@@ -772,7 +776,7 @@ namespace KTYP
 
                         komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                         komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.4");
+                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.5");
 
                         komut.Parameters.AddWithValue("@Node_I", Node_I);
                         komut.Parameters.AddWithValue("@Node_I_Def", Nodes_TM[i].ToString());
@@ -793,7 +797,7 @@ namespace KTYP
 
                         komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                         komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.4");
+                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.5");
 
                         komut.Parameters.AddWithValue("@Node_I", Node_I);
                         komut.Parameters.AddWithValue("@Node_I_Def", Nodes_TM[i].ToString());
@@ -808,7 +812,7 @@ namespace KTYP
                     }
                 }
             }
-            //Senaryo4 de DummyDm ekle
+            //Senaryo5 de DummyDm ekle
             for (int j = 0; j < Nodes_TM.Count - 1; j++)
             {
                 //SOn Düğüm Dummy DM bütün problem düğümlerine uzaklığı -1 yani en son o düğüme gidilecek
@@ -823,7 +827,7 @@ namespace KTYP
 
                 komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                 komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.4");
+                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.5");
 
                 komut.Parameters.AddWithValue("@Node_I", Node_I);
                 komut.Parameters.AddWithValue("@Node_I_Def", "DummyDM");
@@ -844,7 +848,7 @@ namespace KTYP
 
                     komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                     komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.4");
+                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.5");
 
                     komut.Parameters.AddWithValue("@Node_I", Node_I);
                     komut.Parameters.AddWithValue("@Node_I_Def", "DM");
@@ -870,7 +874,7 @@ namespace KTYP
 
                     komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
                     komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.4");
+                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.5");
 
                     komut.Parameters.AddWithValue("@Node_I", Node_I);
                     komut.Parameters.AddWithValue("@Node_I_Def", Nodes_TM[j].ToString());
@@ -887,7 +891,7 @@ namespace KTYP
             //Dummy DM'nin Dummy Dm ye olan uzaklığı 0
             komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
             komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
-            komut.Parameters.AddWithValue("@SENARYO", "SENARYO.4");
+            komut.Parameters.AddWithValue("@SENARYO", "SENARYO.5");
 
             komut.Parameters.AddWithValue("@Node_I", 1000);
             komut.Parameters.AddWithValue("@Node_I_Def", "DummyDM");
@@ -898,6 +902,19 @@ namespace KTYP
             komut.Parameters.AddWithValue("@Distance", 0);
             komut.Parameters.AddWithValue("@Shortest_Path", -1);
             komut.ExecuteNonQuery();
+            //Senaryo 5 M101 de olan kitapların raflarına uzaklığı -1 olarak güncellendi.
+            string SelectTMprecendeceSQL = "SELECT PSM.PROBLEM_ID, PSM.SENARYO, PSM.Node_I, PSM.Node_I_Def, PSM.Node_J,PSM.Node_J_Def,PSM.Distance,PSM.Shortest_Path FROM KTYP.. KTYP_PROBLEM_SENARYO_MATRIX as PSM LEFT OUTER JOIN KTYP..[KTYP_PROBLEM] as KP ON (PSM.PROBLEM_ID=KP.PROBLEM_ID AND PSM.Node_I_Def=KP.Delivery_Node_Def) WHERE KP.Delivery_Node_Def=PSM.Node_I_Def AND PSM.Node_J_Def='M101' AND KP.Pickup_Node_Def LIKE 'M%' AND PSM.SENARYO='SENARYO.5'";
+            SqlDataAdapter da10 = new SqlDataAdapter(SelectTMprecendeceSQL, Conn);
+            DataSet ds10 = new DataSet();
+            int result10= da10.Fill(ds10);
+            for (int i = 0; i < result10; i++)
+            {
+                int NODE_I = Convert.ToInt32(ds10.Tables[0].Rows[i][2]);
+                int NODE_J = Convert.ToInt32(ds10.Tables[0].Rows[i][4]);
+                string UpdateTMprecendeceSQL = "UPDATE KTYP..KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1,Shortest_Path='-1' WHERE PROBLEM_ID='" + NewProblemID.ToString() + "' AND SENARYO ='SENARYO.5' AND Node_I=" + NODE_I.ToString() + " AND Node_J=" + NODE_J.ToString();
+                komut = new SqlCommand(UpdateTMprecendeceSQL, Conn);
+                komut.ExecuteNonQuery();
+            }
             Conn.Close();
         }
     }
