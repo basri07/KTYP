@@ -915,6 +915,47 @@ namespace KTYP
                 komut = new SqlCommand(UpdateTMprecendeceSQL, Conn);
                 komut.ExecuteNonQuery();
             }
+            //SENARYO 6
+            string SelectMatrısS6 = "SELECT *FROM KTYP.. KTYP_PROBLEM_SENARYO_MATRIX  where SENARYO='SENARYO.5' AND PROBLEM_ID ='" + NewProblemID + "'  order by PROBLEM_ID,Node_I,Node_J ";
+            SqlDataAdapter da11 = new SqlDataAdapter(SelectMatrısS6, Conn);
+            DataSet ds11 = new DataSet();
+            int result11 = da11.Fill(ds11);
+
+            //Senaryo 5 den verileri getir ve senaryo 6 olarak ekle
+            for (int i = 0; i < result11; i++)
+            {
+
+                int Node_I = Convert.ToInt32(ds11.Tables[0].Rows[i][2]);
+                string Node_I_Def = ds11.Tables[0].Rows[i][3].ToString();
+                int Node_J = Convert.ToInt32(ds11.Tables[0].Rows[i][4]);
+                string Node_J_Def = ds11.Tables[0].Rows[i][5].ToString();
+                int Distance = Convert.ToInt32(ds11.Tables[0].Rows[i][6]);
+                string ShortestPath = ds11.Tables[0].Rows[i][7].ToString();
+
+                komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
+                komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                komut.Parameters.AddWithValue("@SENARYO", "SENARYO.6");
+
+                komut.Parameters.AddWithValue("@Node_I", Node_I);
+                komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
+
+                komut.Parameters.AddWithValue("@Node_J", Node_J);
+                komut.Parameters.AddWithValue("@Node_J_Def", Node_J_Def);
+
+                komut.Parameters.AddWithValue("@Distance", Distance);
+                komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
+                komut.ExecuteNonQuery();
+            }
+            //Senaryo 3 verilerinde tüm rafların tüm masalara olan uzaklığını -1 olarak güncelle.(Önce masalar sonra raflar ) ÖTSD
+            string UpdatePreS6 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1, Shortest_Path='-1' WHERE SENARYO='SENARYO.6' AND (Node_I_Def LIKE 'R%' AND Node_J_Def LIKE 'M%' ) AND PROBLEM_ID='" + NewProblemID + "'";
+            komut = new SqlCommand(UpdatePreS6, Conn);
+            komut.ExecuteNonQuery();
+            //SENARYO 7 , SENARYO 5 İLE AYNI MATRİSİ KULLANABİLİR.
+            //SENARYO 8-9-10 DİNAMİK OLDUĞU İÇİN
+            //SENARYO 8 BAŞLANGIÇTA DM VE DM'DE BULUNAN KİTAPLARI DAĞITACAK TÜM ÇM'LARINA UĞRAYACAK ŞEKİLDE GSP ÇÖZER
+            //SENARYO.8 EĞER UĞRADIĞI BİR ÇALIŞMA MASASINDA (ÇM) KİTAP VARSA İLGİLİ RAF,ZİYARET EDİLMEMİŞ MASALAR VE ZİYARET EDİLMEMİŞ RAFLAR VE DM DEN OLUŞAN BİR SOP MATRİSİ OLUŞTURUR
+            //SENARYO 8 İLGİLİ MASADA BAŞLAYAN VE DM DE BİTEN BİR SOP PROBLEMİ ÇÖZER
+
             Conn.Close();
         }
     }
