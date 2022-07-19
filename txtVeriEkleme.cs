@@ -23,7 +23,6 @@ namespace KTYP
             AdresTxt = "";
             SQLSorgu = "";
             AdresXlsx = "";
-
         }
         public void SOPTxtToSQL()
         {
@@ -63,19 +62,14 @@ namespace KTYP
             }
             else
             {
-
                 dr.Close();
 
                 for (int l = 0; l < i; l++)
                 {
-
                     parcalar = lines[l + 8].Split(' ');
-
                     for (int k = 0; k < j; k++)
                     {
-
                         a = l.ToString() + " " + k.ToString() + " " + parcalar[k + 1];
-
                         int I = l;
                         int J = k;
                         decimal UZAKLIK = Convert.ToDecimal(parcalar[k + 1]);
@@ -89,7 +83,6 @@ namespace KTYP
                         komut.ExecuteNonQuery();
                     }
                 }
-
                 Conn.Close();
                 MessageBox.Show(DataAdi + " isimli SOP verisi veritabanına eklendi");
             }
@@ -101,7 +94,6 @@ namespace KTYP
             string insert = "INSERT INTO KTYP.. KTYP_FULL_MATRIX (Nodes_I,Nodes_j,Distance,Axis,Degree_Angle) VALUES (@Nodes_I,@Nodes_J,@Distance,@Axis,@Degree_Angle)";
             for (int i = 0; i < KTYPNodeCount + 1; i++)
             {
-
                 string komut = "Select *from KTYP.. KTYP_NOT_FULL_MATRIX where Nodes_I=" + i + "";
                 SqlDataAdapter da = new SqlDataAdapter(komut, Conn);
                 DataSet ds = new DataSet();
@@ -145,7 +137,6 @@ namespace KTYP
                     }
                 }
             }
-
             MessageBox.Show("VERİLER FULL MATRİS OLARAK KAYDEDİLMİŞTİR...");
         }
         public void KTYPTxtToSQL()
@@ -154,11 +145,9 @@ namespace KTYP
             //  ="INSERT INTO KTYP.. KTYP_NOT_FULL_MATRIX (@Nodes_I,@Nodes_J,@Distance,@Axis,@Degree_Angle) VALUES ("&A2&","&B2&","&C2&",'"&D2&"',"&E2&")"
             //  Veriler Düzgün olduğu için excelden SQL'e aktardım.(Yerleşim Planı Matris.xlsx)
             #endregion
-
         }
         public void BookTxtToSQL(string BookTxtAddress, Image Barcode)
         {
-
             SqlCommand komut;
             string sorgu = "INSERT INTO KTYP.. KTYP_BOOKS_DATA(Book_Code,Book_Release_Year,Book_Name,Author_Name,Bookshelf,Book_Barcode) VALUES (@Book_Code,@Book_Release_Year,@Book_Name,@Author_Name,@Bookshelf,@Book_Barcode)";
             // sqlDataAdapter;
@@ -195,7 +184,6 @@ namespace KTYP
                 komut.ExecuteNonQuery();
             }
             Conn.Close();
-
         }
         public void BookInsertToSQL(string Code, string BookYear, string BookName, string AuthorName, string BookshelfID, Image Barcode)
         {
@@ -225,7 +213,6 @@ namespace KTYP
                 komut.ExecuteNonQuery();
                 Conn.Close();
             }
-
         }
         //Data Grid View 'e verileri çekme
         public void BookFillToDataGridView(DataGridView BookInsertGW)
@@ -248,7 +235,6 @@ namespace KTYP
             da.Fill(ds);
             dataGridView.DataSource = ds.Tables[0];
             Conn.Close();
-
         }
         //Data Grid View 'de seçilen verileri veritabanından silme silme
         public void BookDeleteFromSqlWhereSelectedGW(int Book_ID)
@@ -280,7 +266,6 @@ namespace KTYP
             komut.Parameters.AddWithValue("@Book_Barcode", pic);
             komut.ExecuteNonQuery();
             Conn.Close();
-
         }
         public void KTYPRastsalProblemOlustur(int BooksCount, int DmBooksCount, int BookshelfCount, int TablesCount)
         {
@@ -331,9 +316,7 @@ namespace KTYP
                         Nodes.Add(Convert.ToString(ds.Tables[0].Rows[0][0]));
                         Nodes_TM.Add(Convert.ToString(ds.Tables[0].Rows[0][0]));
                     }
-
                 }
-
             }
 
             Nodes_TM.Add("DummyDm");
@@ -361,12 +344,11 @@ namespace KTYP
                     RandomTableList.Add(Convert.ToString(ds2.Tables[0].Rows[0][0]));
                     TableListSql.Append(",'" + Convert.ToString(ds2.Tables[0].Rows[0][0]) + "'");
                 }
-
             }
             TableListSql.Append(")");
 
-        //ÜRETİLEN RAFLAR'a Kitap Sayısı miktarı kadar kitap üret.
-        
+            //ÜRETİLEN RAFLAR'a Kitap Sayısı miktarı kadar kitap üret.
+
             ArrayList RandomBookList = new ArrayList();
             ArrayList BookshelfList = new ArrayList();
             for (int i = 0; i < RandomBookShelfList.Count; i++)
@@ -377,10 +359,9 @@ namespace KTYP
                 int result15 = da15.Fill(ds15);
                 RandomBookList.Add(Convert.ToString(ds15.Tables[0].Rows[0][0]));
                 BookshelfList.Add(Convert.ToString(ds15.Tables[0].Rows[0][1]));
-
             }
             int kalankitap = BooksCount - BookshelfCount;
-            string BookinTableRandomSQL = "SELECT TOP " +kalankitap.ToString() + " Book_ID,Bookshelf FROM KTYP.. KTYP_BOOKS_DATA WHERE Author_Name not like '' AND Bookshelf IN" + BookShelfListSQL + " ORDER BY NEWID()";
+            string BookinTableRandomSQL = "SELECT TOP " + kalankitap.ToString() + " Book_ID,Bookshelf FROM KTYP.. KTYP_BOOKS_DATA WHERE Author_Name not like '' AND Bookshelf IN" + BookShelfListSQL + " ORDER BY NEWID()";
             SqlDataAdapter da1 = new SqlDataAdapter(BookinTableRandomSQL, Conn);
             DataSet ds1 = new DataSet();
             int result1 = da1.Fill(ds1);
@@ -390,9 +371,7 @@ namespace KTYP
                 BookshelfList.Add(Convert.ToString(ds1.Tables[0].Rows[i][1]));
             }
 
-
-
-        //MASALARDA KİTAP DAĞILIMI
+            //MASALARDA KİTAP DAĞILIMI
 
             ArrayList BooksCountTableRandomList = new ArrayList();
             for (int i = 0; i < DmBooksCount; i++)
@@ -403,7 +382,7 @@ namespace KTYP
             {
                 BooksCountTableRandomList.Add(RandomTableList[i]);
             }
-            int BooksinTableCount = BooksCount - DmBooksCount-TablesCount;
+            int BooksinTableCount = BooksCount - DmBooksCount - TablesCount;
             for (int i = 0; i < BooksinTableCount; i++)
             {
                 Random Rnd = new Random();
@@ -424,6 +403,7 @@ namespace KTYP
             }
             else
             {
+#pragma warning disable CS8600 // Null sabit değeri veya olası null değeri, boş değer atanamaz türe dönüştürülüyor.
                 LastProblemID = ds3.Tables[0].Rows[0][0].ToString();
 #pragma warning disable CS8600 // Null sabit değeri veya olası null değeri, boş değer atanamaz türe dönüştürülüyor.
                 string[] parcalar;
@@ -436,8 +416,6 @@ namespace KTYP
 
             }
 #pragma warning disable CS8600 // Null sabit değeri veya olası null değeri, boş değer atanamaz türe dönüştürülüyor.
-
-
             string InsertProblemSQL = "INSERT INTO KTYP.. KTYP_PROBLEM (PROBLEM_ID,Book_ID,Pickup_Node_Def,Delivery_Node_Def) VALUES(@PROBLEM_ID,@Book_ID,@Pickup_Node_Def,@Delivery_Node_Def)";
             for (int i = 0; i < BooksCount; i++)
             {
@@ -486,7 +464,6 @@ namespace KTYP
                     komut.ExecuteNonQuery();
                 }
             }
-
             //Senaryo 1 (GSP) ÇM veya TM dahil değil DM den alınan kitaplar doğrudan raflara
             string ProblemtoSenaryo1 = "SELECT  DISTINCT Delivery_Node_Def FROM KTYP.. KTYP_PROBLEM where Pickup_Node_Def LIKE '%DM%' AND PROBLEM_ID ='" + NewProblemID + "'";
             SqlDataAdapter da8 = new SqlDataAdapter(ProblemtoSenaryo1, Conn);
@@ -524,7 +501,6 @@ namespace KTYP
                     komut.Parameters.AddWithValue("@Distance", Distance);
                     komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                     komut.ExecuteNonQuery();
-
                 }
             }
             //SENARYO 2 SQL'e Aktar( Eş zamanlı TM dahil)
@@ -565,7 +541,6 @@ namespace KTYP
                         komut.Parameters.AddWithValue("@Distance", Distance);
                         komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                         komut.ExecuteNonQuery();
-
                     }
                     else
                     {
@@ -587,10 +562,8 @@ namespace KTYP
                         komut.Parameters.AddWithValue("@Distance", Distance);
                         komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                         komut.ExecuteNonQuery();
-
                     }
                 }
-
             }
             for (int j = 0; j < Nodes.Count; j++)
             {
@@ -665,7 +638,6 @@ namespace KTYP
                     komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                     komut.ExecuteNonQuery();
                 }
-
             }
             //Dummy DM'nin Dummy Dm ye olan uzaklığı 0
             komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
@@ -746,8 +718,6 @@ namespace KTYP
             komut.ExecuteNonQuery();
             //Senaryo4 Senaryo2 ile aynı matrisi kullanabilir
 
-
-
             //Senaryo 5 TM dahil eş zamanlı
             for (int i = 0; i < Nodes_TM.Count - 1; i++)
             {
@@ -800,7 +770,6 @@ namespace KTYP
                         komut.Parameters.AddWithValue("@Distance", Distance);
                         komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                         komut.ExecuteNonQuery();
-
                     }
                 }
             }
@@ -878,7 +847,6 @@ namespace KTYP
                     komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                     komut.ExecuteNonQuery();
                 }
-
             }
             //Dummy DM'nin Dummy Dm ye olan uzaklığı 0
             komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
@@ -898,7 +866,7 @@ namespace KTYP
             string SelectTMprecendeceSQL = "SELECT PSM.PROBLEM_ID, PSM.SENARYO, PSM.Node_I, PSM.Node_I_Def, PSM.Node_J,PSM.Node_J_Def,PSM.Distance,PSM.Shortest_Path FROM KTYP.. KTYP_PROBLEM_SENARYO_MATRIX as PSM LEFT OUTER JOIN KTYP..[KTYP_PROBLEM] as KP ON (PSM.PROBLEM_ID=KP.PROBLEM_ID AND PSM.Node_I_Def=KP.Delivery_Node_Def) WHERE KP.Delivery_Node_Def=PSM.Node_I_Def AND PSM.Node_J_Def='M101' AND KP.Pickup_Node_Def LIKE 'M%' AND PSM.SENARYO='SENARYO.5'";
             SqlDataAdapter da10 = new SqlDataAdapter(SelectTMprecendeceSQL, Conn);
             DataSet ds10 = new DataSet();
-            int result10= da10.Fill(ds10);
+            int result10 = da10.Fill(ds10);
             for (int i = 0; i < result10; i++)
             {
                 int NODE_I = Convert.ToInt32(ds10.Tables[0].Rows[i][2]);
@@ -957,7 +925,7 @@ namespace KTYP
             int result12 = da12.Fill(ds12);
             for (int i = 0; i < result12; i++)
             {
-                if (Senaryo8nodes.Contains(ds12.Tables[0].Rows[i][3].ToString())==false)
+                if (Senaryo8nodes.Contains(ds12.Tables[0].Rows[i][3].ToString()) == false)
                 {
                     Senaryo8nodes.Add(ds12.Tables[0].Rows[i][3].ToString());
                 }
@@ -974,10 +942,10 @@ namespace KTYP
             {
                 for (int j = 0; j < Senaryo8nodes.Count; j++)
                 {
-                    string SelectS8MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo8nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo8nodes[j].ToString() +"'";
+                    string SelectS8MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo8nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo8nodes[j].ToString() + "'";
 
                     SqlDataAdapter da14 = new SqlDataAdapter(SelectS8MatrisNodes, Conn);
-                    DataSet ds14= new DataSet();
+                    DataSet ds14 = new DataSet();
                     int result14 = da14.Fill(ds14);
 
                     int Node_I = Convert.ToInt32(ds14.Tables[0].Rows[0][0]);
@@ -1000,7 +968,6 @@ namespace KTYP
                     komut.Parameters.AddWithValue("@Distance", Distance);
                     komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                     komut.ExecuteNonQuery();
-
                 }
             }
             //SENARYO 9 BAŞLANGIÇ MATRİS (DM , TM(M101) VE DM'DEKİ KİTAPLARIN RAFLARI) ENSON TM'DE BİTMESİ GEREKMİYOR.
@@ -1044,7 +1011,6 @@ namespace KTYP
                     komut.Parameters.AddWithValue("@Distance", Distance);
                     komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
                     komut.ExecuteNonQuery();
-
                 }
             }
             //SENARYO 10 ÖNCE TOPLA SONRA DAĞIT (DMDEN HEMN SONRA TM'YE GİDİLİR) DM'DE VE TM'DE OLAN KİTAPLARIN RAFLARI EKLENİR TM'DE BAŞLAYAN DM'DE BİTEN BİR SOP ÇÖZÜLÜR.
@@ -1069,9 +1035,9 @@ namespace KTYP
             {
                 for (int j = 0; j < Senaryo9nodes.Count; j++)
                 {
-                    if (i==Senaryo9nodes.Count-1)
+                    if (i == Senaryo9nodes.Count - 1)
                     {
-                        if (j==Senaryo10nodes.Count-1)
+                        if (j == Senaryo10nodes.Count - 1)
                         {
                             string SelectS9MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo10nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo10nodes[j].ToString() + "'";
                             SqlDataAdapter da14 = new SqlDataAdapter(SelectS9MatrisNodes, Conn);
@@ -1127,7 +1093,7 @@ namespace KTYP
                             komut.Parameters.AddWithValue("@Shortest_Path", "-1");
                             komut.ExecuteNonQuery();
                         }
-                       
+
                     }
                     else
                     {
