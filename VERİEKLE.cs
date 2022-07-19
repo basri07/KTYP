@@ -222,6 +222,7 @@ namespace KTYP
             int BooksCount = Convert.ToInt32(BooksCount_TextBox.Text);
             int DmBooksCount = Convert.ToInt32(DMBooksCount_TextBox.Text);
             txtVeriEkleme.KTYPRastsalProblemOlustur(BooksCount,DmBooksCount, BookShelfCount, TablesCount);
+            MessageBox.Show("Senaryolar eklendi");
 
         }
     }

@@ -298,7 +298,7 @@ namespace KTYP
             {
                 if (i == 0)
                 {
-                    string BookShelfRandomSQL = "SELECT TOP (1) Description FROM KTYP.. Nodes_Information WHERE Description like 'R%' ORDER BY NEWID()";
+                    string BookShelfRandomSQL = "SELECT TOP (1) Description FROM KTYP.. Nodes_Information WHERE Description like 'R%' AND Description<>'R83' ORDER BY NEWID()";
                     SqlDataAdapter da = new SqlDataAdapter(BookShelfRandomSQL, Conn);
                     DataSet ds = new DataSet();
                     int result = da.Fill(ds);
@@ -311,7 +311,7 @@ namespace KTYP
                 {
                     if (i == BookshelfCount - 1)
                     {
-                        string BookShelfRandomSQL = "SELECT TOP (1) Description FROM KTYP.. Nodes_Information WHERE Description like 'R%' AND Description NOT IN" + BookShelfListSQL.ToString() + ") ORDER BY NEWID()";
+                        string BookShelfRandomSQL = "SELECT TOP (1) Description FROM KTYP.. Nodes_Information WHERE Description like 'R%' AND Description NOT IN" + BookShelfListSQL.ToString() + ",'R83') ORDER BY NEWID()";
                         SqlDataAdapter da = new SqlDataAdapter(BookShelfRandomSQL, Conn);
                         DataSet ds = new DataSet();
                         int result = da.Fill(ds);
@@ -322,7 +322,7 @@ namespace KTYP
                     }
                     else
                     {
-                        string BookShelfRandomSQL = "SELECT TOP (1) Description FROM KTYP.. Nodes_Information WHERE Description like 'R%' AND Description NOT IN" + BookShelfListSQL.ToString() + ") ORDER BY NEWID()";
+                        string BookShelfRandomSQL = "SELECT TOP (1) Description FROM KTYP.. Nodes_Information WHERE Description like 'R%' AND Description NOT IN" + BookShelfListSQL.ToString() + ",'R83') ORDER BY NEWID()";
                         SqlDataAdapter da = new SqlDataAdapter(BookShelfRandomSQL, Conn);
                         DataSet ds = new DataSet();
                         int result = da.Fill(ds);
@@ -366,59 +366,51 @@ namespace KTYP
             TableListSql.Append(")");
 
         //ÜRETİLEN RAFLAR'a Kitap Sayısı miktarı kadar kitap üret.
-        KitapUret:
-            string BookinTableRandomSQL = "SELECT TOP " + BooksCount.ToString() + " Book_ID,Bookshelf FROM KTYP.. KTYP_BOOKS_DATA WHERE Author_Name not like '' AND Bookshelf IN" + BookShelfListSQL + " ORDER BY NEWID()";
+        
+            ArrayList RandomBookList = new ArrayList();
+            ArrayList BookshelfList = new ArrayList();
+            for (int i = 0; i < RandomBookShelfList.Count; i++)
+            {
+                string BookperBookShelf = "SELECT TOP (1) Book_ID,Bookshelf FROM KTYP.. KTYP_BOOKS_DATA WHERE Author_Name not like '' AND Bookshelf ='" + RandomBookShelfList[i].ToString() + "' ORDER BY NEWID()";
+                SqlDataAdapter da15 = new SqlDataAdapter(BookperBookShelf, Conn);
+                DataSet ds15 = new DataSet();
+                int result15 = da15.Fill(ds15);
+                RandomBookList.Add(Convert.ToString(ds15.Tables[0].Rows[0][0]));
+                BookshelfList.Add(Convert.ToString(ds15.Tables[0].Rows[0][1]));
+
+            }
+            int kalankitap = BooksCount - BookshelfCount;
+            string BookinTableRandomSQL = "SELECT TOP " +kalankitap.ToString() + " Book_ID,Bookshelf FROM KTYP.. KTYP_BOOKS_DATA WHERE Author_Name not like '' AND Bookshelf IN" + BookShelfListSQL + " ORDER BY NEWID()";
             SqlDataAdapter da1 = new SqlDataAdapter(BookinTableRandomSQL, Conn);
             DataSet ds1 = new DataSet();
             int result1 = da1.Fill(ds1);
-            ArrayList RandomBookList = new ArrayList();
-            ArrayList BookshelfList = new ArrayList();
             for (int i = 0; i < result1; i++)
             {
                 RandomBookList.Add(Convert.ToString(ds1.Tables[0].Rows[i][0]));
                 BookshelfList.Add(Convert.ToString(ds1.Tables[0].Rows[i][1]));
             }
 
-            for (int i = 0; i < RandomBookShelfList.Count; i++)
-            {
-                if (BookshelfList.Contains(RandomBookShelfList[i].ToString()))
-                {
-
-                }
-                else
-                {
-                    i = 0;
-                    goto KitapUret;
-                }
-            }
 
 
         //MASALARDA KİTAP DAĞILIMI
-        MasaKitap:
+
             ArrayList BooksCountTableRandomList = new ArrayList();
             for (int i = 0; i < DmBooksCount; i++)
             {
                 BooksCountTableRandomList.Add("DM");
             }
-            int BooksinTableCount = BooksCount - DmBooksCount;
+            for (int i = 0; i < TablesCount; i++)
+            {
+                BooksCountTableRandomList.Add(RandomTableList[i]);
+            }
+            int BooksinTableCount = BooksCount - DmBooksCount-TablesCount;
             for (int i = 0; i < BooksinTableCount; i++)
             {
                 Random Rnd = new Random();
                 int RndTableIndex = Rnd.Next(TablesCount);
                 BooksCountTableRandomList.Add(RandomTableList[RndTableIndex]);
             }
-            for (int i = 0; i < TablesCount; i++)
-            {
-                if (BooksCountTableRandomList.Contains(RandomTableList[i].ToString()))
-                {
 
-                }
-                else
-                {
-                    i = 0;
-                    goto MasaKitap;
-                }
-            }
             string LastProblemIDSQL = "SELECT MAX(PROBLEM_ID) from KTYP..KTYP_PROBLEM";
             SqlDataAdapter da3 = new SqlDataAdapter(LastProblemIDSQL, Conn);
             DataSet ds3 = new DataSet();
@@ -956,6 +948,220 @@ namespace KTYP
             //SENARYO.8 EĞER UĞRADIĞI BİR ÇALIŞMA MASASINDA (ÇM) KİTAP VARSA İLGİLİ RAF,ZİYARET EDİLMEMİŞ MASALAR VE ZİYARET EDİLMEMİŞ RAFLAR VE DM DEN OLUŞAN BİR SOP MATRİSİ OLUŞTURUR
             //SENARYO 8 İLGİLİ MASADA BAŞLAYAN VE DM DE BİTEN BİR SOP PROBLEMİ ÇÖZER
 
+            //SENARYO 8 BAŞLANGIÇ GSP MATRİSİ(DM - DM'DE BULUNAN KİTAPLARIN RAFLARI-TÜM MASALAR)
+            ArrayList Senaryo8nodes = new ArrayList();
+            Senaryo8nodes.Add("DM");
+            string SelectDmBook = "SELECT *FROM KTYP.. KTYP_PROBLEM WHERE PROBLEM_ID='" + NewProblemID + "' AND Pickup_Node_Def='DM'";
+            SqlDataAdapter da12 = new SqlDataAdapter(SelectDmBook, Conn);
+            DataSet ds12 = new DataSet();
+            int result12 = da12.Fill(ds12);
+            for (int i = 0; i < result12; i++)
+            {
+                if (Senaryo8nodes.Contains(ds12.Tables[0].Rows[i][3].ToString())==false)
+                {
+                    Senaryo8nodes.Add(ds12.Tables[0].Rows[i][3].ToString());
+                }
+            }
+            string SelectAllTables = "Select *from KTYP.. Nodes_Information where Description LIKE 'M%' ";
+            SqlDataAdapter da13 = new SqlDataAdapter(SelectAllTables, Conn);
+            DataSet ds13 = new DataSet();
+            int result13 = da13.Fill(ds13);
+            for (int i = 0; i < result13; i++)
+            {
+                Senaryo8nodes.Add(ds13.Tables[0].Rows[i][1].ToString());
+            }
+            for (int i = 0; i < Senaryo8nodes.Count; i++)
+            {
+                for (int j = 0; j < Senaryo8nodes.Count; j++)
+                {
+                    string SelectS8MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo8nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo8nodes[j].ToString() +"'";
+
+                    SqlDataAdapter da14 = new SqlDataAdapter(SelectS8MatrisNodes, Conn);
+                    DataSet ds14= new DataSet();
+                    int result14 = da14.Fill(ds14);
+
+                    int Node_I = Convert.ToInt32(ds14.Tables[0].Rows[0][0]);
+                    string Node_I_Def = ds14.Tables[0].Rows[0][2].ToString();
+                    int Node_J = Convert.ToInt32(ds14.Tables[0].Rows[0][1]);
+                    string Node_J_Def = ds14.Tables[0].Rows[0][3].ToString();
+                    int Distance = Convert.ToInt32(ds14.Tables[0].Rows[0][4]);
+                    string ShortestPath = ds14.Tables[0].Rows[0][5].ToString();
+
+                    komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
+                    komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.8");
+
+                    komut.Parameters.AddWithValue("@Node_I", Node_I);
+                    komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
+
+                    komut.Parameters.AddWithValue("@Node_J", Node_J);
+                    komut.Parameters.AddWithValue("@Node_J_Def", Node_J_Def);
+
+                    komut.Parameters.AddWithValue("@Distance", Distance);
+                    komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
+                    komut.ExecuteNonQuery();
+
+                }
+            }
+            //SENARYO 9 BAŞLANGIÇ MATRİS (DM , TM(M101) VE DM'DEKİ KİTAPLARIN RAFLARI) ENSON TM'DE BİTMESİ GEREKMİYOR.
+            ArrayList Senaryo9nodes = new ArrayList();
+            Senaryo9nodes.Add("DM");
+            for (int i = 0; i < result12; i++)
+            {
+                if (Senaryo9nodes.Contains(ds12.Tables[0].Rows[i][3].ToString()) == false)
+                {
+                    Senaryo9nodes.Add(ds12.Tables[0].Rows[i][3].ToString());
+                }
+            }
+            Senaryo9nodes.Add("M101");
+            for (int i = 0; i < Senaryo9nodes.Count; i++)
+            {
+                for (int j = 0; j < Senaryo9nodes.Count; j++)
+                {
+                    string SelectS9MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo9nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo9nodes[j].ToString() + "'";
+
+                    SqlDataAdapter da14 = new SqlDataAdapter(SelectS9MatrisNodes, Conn);
+                    DataSet ds14 = new DataSet();
+                    int result14 = da14.Fill(ds14);
+
+                    int Node_I = Convert.ToInt32(ds14.Tables[0].Rows[0][0]);
+                    string Node_I_Def = ds14.Tables[0].Rows[0][2].ToString();
+                    int Node_J = Convert.ToInt32(ds14.Tables[0].Rows[0][1]);
+                    string Node_J_Def = ds14.Tables[0].Rows[0][3].ToString();
+                    int Distance = Convert.ToInt32(ds14.Tables[0].Rows[0][4]);
+                    string ShortestPath = ds14.Tables[0].Rows[0][5].ToString();
+
+                    komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
+                    komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                    komut.Parameters.AddWithValue("@SENARYO", "SENARYO.9");
+
+                    komut.Parameters.AddWithValue("@Node_I", Node_I);
+                    komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
+
+                    komut.Parameters.AddWithValue("@Node_J", Node_J);
+                    komut.Parameters.AddWithValue("@Node_J_Def", Node_J_Def);
+
+                    komut.Parameters.AddWithValue("@Distance", Distance);
+                    komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
+                    komut.ExecuteNonQuery();
+
+                }
+            }
+            //SENARYO 10 ÖNCE TOPLA SONRA DAĞIT (DMDEN HEMN SONRA TM'YE GİDİLİR) DM'DE VE TM'DE OLAN KİTAPLARIN RAFLARI EKLENİR TM'DE BAŞLAYAN DM'DE BİTEN BİR SOP ÇÖZÜLÜR.
+
+            ArrayList Senaryo10nodes = new ArrayList();
+            Senaryo10nodes.Add("M101");
+
+
+            string SelectAllBook = "SELECT *FROM KTYP.. KTYP_PROBLEM WHERE PROBLEM_ID='" + NewProblemID + "'";
+            SqlDataAdapter da16 = new SqlDataAdapter(SelectAllBook, Conn);
+            DataSet ds16 = new DataSet();
+            int result16 = da16.Fill(ds16);
+            for (int i = 0; i < result16; i++)
+            {
+                if (Senaryo10nodes.Contains(ds16.Tables[0].Rows[i][3].ToString()) == false)
+                {
+                    Senaryo10nodes.Add(ds16.Tables[0].Rows[i][3].ToString());
+                }
+            }
+            Senaryo10nodes.Add("DM");
+            for (int i = 0; i < Senaryo9nodes.Count; i++)
+            {
+                for (int j = 0; j < Senaryo9nodes.Count; j++)
+                {
+                    if (i==Senaryo9nodes.Count-1)
+                    {
+                        if (j==Senaryo10nodes.Count-1)
+                        {
+                            string SelectS9MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo10nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo10nodes[j].ToString() + "'";
+                            SqlDataAdapter da14 = new SqlDataAdapter(SelectS9MatrisNodes, Conn);
+                            DataSet ds14 = new DataSet();
+                            int result14 = da14.Fill(ds14);
+
+                            int Node_I = Convert.ToInt32(ds14.Tables[0].Rows[0][0]);
+                            string Node_I_Def = ds14.Tables[0].Rows[0][2].ToString();
+                            int Node_J = Convert.ToInt32(ds14.Tables[0].Rows[0][1]);
+                            string Node_J_Def = ds14.Tables[0].Rows[0][3].ToString();
+                            int Distance = Convert.ToInt32(ds14.Tables[0].Rows[0][4]);
+                            string ShortestPath = ds14.Tables[0].Rows[0][5].ToString();
+
+                            komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
+                            komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                            komut.Parameters.AddWithValue("@SENARYO", "SENARYO.10");
+
+                            komut.Parameters.AddWithValue("@Node_I", Node_I);
+                            komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
+
+                            komut.Parameters.AddWithValue("@Node_J", Node_J);
+                            komut.Parameters.AddWithValue("@Node_J_Def", Node_J_Def);
+
+                            komut.Parameters.AddWithValue("@Distance", Distance);
+                            komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
+                            komut.ExecuteNonQuery();
+                        }
+                        else
+                        {
+                            string SelectS9MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo10nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo10nodes[j].ToString() + "'";
+                            SqlDataAdapter da14 = new SqlDataAdapter(SelectS9MatrisNodes, Conn);
+                            DataSet ds14 = new DataSet();
+                            int result14 = da14.Fill(ds14);
+
+                            int Node_I = Convert.ToInt32(ds14.Tables[0].Rows[0][0]);
+                            string Node_I_Def = ds14.Tables[0].Rows[0][2].ToString();
+                            int Node_J = Convert.ToInt32(ds14.Tables[0].Rows[0][1]);
+                            string Node_J_Def = ds14.Tables[0].Rows[0][3].ToString();
+                            int Distance = Convert.ToInt32(ds14.Tables[0].Rows[0][4]);
+                            string ShortestPath = ds14.Tables[0].Rows[0][5].ToString();
+
+                            komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
+                            komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                            komut.Parameters.AddWithValue("@SENARYO", "SENARYO.10");
+
+                            komut.Parameters.AddWithValue("@Node_I", Node_I);
+                            komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
+
+                            komut.Parameters.AddWithValue("@Node_J", Node_J);
+                            komut.Parameters.AddWithValue("@Node_J_Def", Node_J_Def);
+
+                            komut.Parameters.AddWithValue("@Distance", -1);
+                            komut.Parameters.AddWithValue("@Shortest_Path", "-1");
+                            komut.ExecuteNonQuery();
+                        }
+                       
+                    }
+                    else
+                    {
+                        string SelectS9MatrisNodes = "SELECT *FROM KTYP.. VW_KTYP_REQUIRED_NODES WHERE  Nodes_I_Def='" + Senaryo10nodes[i].ToString() + "' AND Nodes_J_Def='" + Senaryo10nodes[j].ToString() + "'";
+                        SqlDataAdapter da14 = new SqlDataAdapter(SelectS9MatrisNodes, Conn);
+                        DataSet ds14 = new DataSet();
+                        int result14 = da14.Fill(ds14);
+
+                        int Node_I = Convert.ToInt32(ds14.Tables[0].Rows[0][0]);
+                        string Node_I_Def = ds14.Tables[0].Rows[0][2].ToString();
+                        int Node_J = Convert.ToInt32(ds14.Tables[0].Rows[0][1]);
+                        string Node_J_Def = ds14.Tables[0].Rows[0][3].ToString();
+                        int Distance = Convert.ToInt32(ds14.Tables[0].Rows[0][4]);
+                        string ShortestPath = ds14.Tables[0].Rows[0][5].ToString();
+
+                        komut = new SqlCommand(InsertProblemSenaryo1Matrix, Conn);
+                        komut.Parameters.AddWithValue("@PROBLEM_ID", NewProblemID);
+                        komut.Parameters.AddWithValue("@SENARYO", "SENARYO.10");
+
+                        komut.Parameters.AddWithValue("@Node_I", Node_I);
+                        komut.Parameters.AddWithValue("@Node_I_Def", Node_I_Def);
+
+                        komut.Parameters.AddWithValue("@Node_J", Node_J);
+                        komut.Parameters.AddWithValue("@Node_J_Def", Node_J_Def);
+
+                        komut.Parameters.AddWithValue("@Distance", Distance);
+                        komut.Parameters.AddWithValue("@Shortest_Path", ShortestPath);
+                        komut.ExecuteNonQuery();
+                    }
+                }
+            }
+            string UpdatePreS10 = "UPDATE KTYP.. KTYP_PROBLEM_SENARYO_MATRIX SET Distance=-1, Shortest_Path='-1' WHERE SENARYO = 'SENARYO.10' AND Node_J_Def='M101' AND Node_I_Def NOT IN('M101','DM') AND PROBLEM_ID='" + NewProblemID + "'";
+            komut = new SqlCommand(UpdatePreS2, Conn);
+            komut.ExecuteNonQuery();
             Conn.Close();
         }
     }
