@@ -14,21 +14,14 @@ namespace KTYP
 
         txtVeriEkleme txtVeriEkleme;
         SqlConnection Conn = ConnectionSQL.SqlConnection();
-
-
-
-
-
         public VERİEKLE()
         {
             InitializeComponent();
             txtVeriEkleme = new txtVeriEkleme();
         }
-
         private void SOP_SecButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();
-
             file.FilterIndex = 2;
             file.RestoreDirectory = true;
             file.CheckFileExists = false;
@@ -37,20 +30,16 @@ namespace KTYP
             SOP_AdressTextBox.Text = file.FileName;
             txtVeriEkleme.AdresTxt = file.FileName;
         }
-
         private void SOP_EkleButton_Click(object sender, EventArgs e)
         {
             txtVeriEkleme.SOPTxtToSQL();
         }
-
         private void KTYP_EkleButton_Click(object sender, EventArgs e)
         {
             txtVeriEkleme.KTYPtoFullMatrix();
         }
-
         private void KTYP_Dijkstra_Button_Click(object sender, EventArgs e)
         {
-
             string sorgu = "SELECT Nodes_I,Nodes_J,Distance FROM KTYP.. KTYP_FULL_MATRIX ORDER BY Nodes_I,Nodes_J";
             Conn.Open();
             SqlDataAdapter da = new SqlDataAdapter(sorgu, Conn);
@@ -81,7 +70,6 @@ namespace KTYP
                         Yaz.WriteLine(DistanceMatrix);
                         k++;
                     }
-
                 }
             }
             Yaz.Close();
@@ -107,25 +95,20 @@ namespace KTYP
                         Yaz1.WriteLine(DistanceMatrix);
                         k++;
                     }
-
                 }
             }
             Yaz1.Close();
             MessageBox.Show(result.ToString());
             Conn.Close();
         }
-
         private void TxtToSQLKTYP_Button_Click(object sender, EventArgs e)
         {
             DijkstraWithoutQueue.DijkstraSolve();
             MessageBox.Show("İŞLEM BİTTİ");
         }
-
         private void KTYPExcel_Sec_Button_Click(object sender, EventArgs e)
         {
-
             OpenFileDialog file = new OpenFileDialog();
-
             file.FilterIndex = 2;
             file.RestoreDirectory = true;
             file.CheckFileExists = false;
@@ -134,19 +117,14 @@ namespace KTYP
             BookTxtAddress_TextBox.Text = file.FileName;
             txtVeriEkleme.AdresTxt = file.FileName;
         }
-
-
         private void BookTxtToSql_Button_Click(object sender, EventArgs e)
         {
             txtVeriEkleme.BookTxtToSQL(BookTxtAddress_TextBox.Text, TtoSql_QRCode_pictureBox.Image);
         }
-
-
         private void BookFill_Button_Click_1(object sender, EventArgs e)
         {
             txtVeriEkleme.BookFillToDataGridView(BookInsertGW);
         }
-
         private void BookInsert_Button_Click(object sender, EventArgs e)
         {
             txtVeriEkleme.BookInsertToSQL(BookCode_TextBox.Text, BookYear_TextBox.Text, BookName_TextBox.Text, AuthorName_TextBox.Text, BookshelfID_TextBox.Text, BookCode_pictureBox.Image);
@@ -169,23 +147,19 @@ namespace KTYP
             BookshelfID_TextBox.Clear();
             BookCode_TextBox.Focus();
         }
-
         private void BookDelete_Button_Click(object sender, EventArgs e)
         {
-
             foreach (DataGridViewRow drow in BookInsertGW.SelectedRows)  //Seçili Satırları Silme
             {
 #pragma warning disable CS8600 // Null sabit değeri veya olası null değeri, boş değer atanamaz türe dönüştürülüyor.
                 int BookID = Convert.ToInt32(drow.Cells[0].Value);
 
                 txtVeriEkleme.BookDeleteFromSqlWhereSelectedGW(BookID);
-
             }
             txtVeriEkleme.BookFillToDataGridView(BookInsertGW);
         }
         private void BookInsertGW_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-
             int SelectedArea = BookInsertGW.SelectedCells[0].RowIndex;
             string BookCode = BookInsertGW.Rows[SelectedArea].Cells[1].Value.ToString();
             string BookYear = BookInsertGW.Rows[SelectedArea].Cells[2].Value.ToString();
@@ -214,16 +188,14 @@ namespace KTYP
                 BookshelfID_TextBox.Text, BookCode_pictureBox.Image);
             txtVeriEkleme.BookFilterSQLtoDataGridView(BookCode_TextBox.Text, BookYear_TextBox.Text, BookName_TextBox.Text, AuthorName_TextBox.Text, BookshelfID_TextBox.Text, BookInsertGW);
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             int BookShelfCount = Convert.ToInt32(BookshelfCount_numericUpDown.Value);
             int TablesCount = Convert.ToInt32(TableCount_numericUpDown.Value);
             int BooksCount = Convert.ToInt32(BooksCount_TextBox.Text);
             int DmBooksCount = Convert.ToInt32(DMBooksCount_TextBox.Text);
-            txtVeriEkleme.KTYPRastsalProblemOlustur(BooksCount,DmBooksCount, BookShelfCount, TablesCount);
+            txtVeriEkleme.KTYPRastsalProblemOlustur(BooksCount, DmBooksCount, BookShelfCount, TablesCount);
             MessageBox.Show("Senaryolar eklendi");
-
         }
     }
 }
