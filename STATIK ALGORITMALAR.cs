@@ -20,31 +20,21 @@ namespace KTYP
         SqlCommand komut = new SqlCommand();
         // public List<UzaklikMatrisi> UzaklikMatrisi = new List<UzaklikMatrisi>();
         SOPAtanabilirListeGuncelle sopk;
-
+        ProblemComboBox ProblemComboBox;
         public STATIK_ALGORITMALAR()
         {
             DATA_ID = "";
             InitializeComponent();
             sopk = new SOPAtanabilirListeGuncelle();
+            ProblemComboBox= new ProblemComboBox(); 
 
         }
         private void STATIK_ALGORITMALAR_Load(object sender, EventArgs e)
         {
             #region DATA ADLARI COMBO_BOX'A GETİRİLİR
 
-            SqlCommand komut = new SqlCommand();
-            komut.CommandText = "SELECT DATA_ID from KTYP.. VW_SOP_DATA_TOPLAM_BILGILERI GROUP BY DATA_ID";
-            komut.Connection = baglanti;
-            komut.CommandType = CommandType.Text;
-            SqlDataReader dr;
-            baglanti.Open();
-            dr = komut.ExecuteReader();
-            while (dr.Read())
-            {
-                SOPData.Items.Add(dr["DATA_ID"]);
-            }
-            dr.Close();
-            baglanti.Close();
+            ProblemComboBox.SOPDataToComboBox(SOPData);
+            ProblemComboBox.KTYPDataToComboBox(S1_comboBox);
             #endregion
         }
         private void PSO_SOPCozumButton_Click(object sender, EventArgs e)

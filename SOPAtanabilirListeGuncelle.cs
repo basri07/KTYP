@@ -49,7 +49,6 @@ namespace KTYP
                     for (int i = 0; i < AtanabilirSayisi; i++)
                     {
                         Atananlar_Atanabilirler_Sql2.Append(", " + AtanabilirArray[i] + "");
-
                     }
                 }
                 else { }
@@ -64,13 +63,11 @@ namespace KTYP
                 //ATAMA KOŞULLARINI SAĞLAYAN SQL KOMUTUNDAN GELEN VERİLER ATANABİLİRLER LİSTESİNE EKLENİR.
                 while (dr.Read())
                 {
-
                     AtanabilirArray.Add(Convert.ToInt32(dr[0]));
                     //a += +Convert.ToInt32(dr[0]) + " ";
                 }
                 dr.Close();
                 baglanti.Close();
-
             }
         }
     }
