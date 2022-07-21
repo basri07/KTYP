@@ -48,7 +48,7 @@ namespace KTYP
         }
         public DataGridView KTYPSenaryo1LoadGVW(DataGridView S1LoadGW,string Problem_ID)
         {
-            string sorgu = "SELECT *FROM KTYP.. KTYP_PROBLEM WHERE PROBLEM_ID='"+Problem_ID+"' AND Pickup_Node_Def='DM'";
+            string sorgu = "SELECT  Book_ID,Book_Code,Book_Barcode,Book_Name,Author_Name,Pickup_Node_Def,Delivery_Node_Def from [KTYP].[dbo].[VW_KTYP_PROBLEM] WHERE PROBLEM_ID='" + Problem_ID+"' AND Pickup_Node_Def='DM'";
             baglanti.Open();
             SqlDataAdapter da = new SqlDataAdapter(sorgu, baglanti);
             DataSet ds = new DataSet();
