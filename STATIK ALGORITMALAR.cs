@@ -32,9 +32,10 @@ namespace KTYP
         private void STATIK_ALGORITMALAR_Load(object sender, EventArgs e)
         {
             #region DATA ADLARI COMBO_BOX'A GETİRİLİR
-
+            string Problem_ID = S1_comboBox.Text;
             ProblemComboBox.SOPDataToComboBox(SOPData);
             ProblemComboBox.KTYPDataToComboBox(S1_comboBox);
+            
             #endregion
         }
         private void PSO_SOPCozumButton_Click(object sender, EventArgs e)
@@ -111,6 +112,10 @@ namespace KTYP
 
         }
 
-
+        private void S1Fill_Button_Click(object sender, EventArgs e)
+        {
+            string Problem_ID = S1_comboBox.Text;
+            ProblemComboBox.KTYPSenaryo1LoadGVW(S1load_GVW, Problem_ID);
+        }
     }
 }

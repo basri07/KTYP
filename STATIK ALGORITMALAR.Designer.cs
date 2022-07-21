@@ -40,13 +40,16 @@
             this.SOPData = new System.Windows.Forms.ComboBox();
             this.PSO_SOPCozumButton = new System.Windows.Forms.Button();
             this.Senaryo1 = new System.Windows.Forms.TabPage();
+            this.S1load_GVW = new System.Windows.Forms.DataGridView();
+            this.S1Solve_Button = new System.Windows.Forms.Button();
             this.SolveMethod_ComboBox = new System.Windows.Forms.ComboBox();
             this.S1_comboBox = new System.Windows.Forms.ComboBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.button1 = new System.Windows.Forms.Button();
+            this.S1Fill_Button = new System.Windows.Forms.Button();
             this.PSO_SOP.SuspendLayout();
             this.PSO_SOPPage.SuspendLayout();
             this.Senaryo1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.S1load_GVW)).BeginInit();
             this.SuspendLayout();
             // 
             // PSO_SOP
@@ -56,7 +59,7 @@
             this.PSO_SOP.Location = new System.Drawing.Point(12, 21);
             this.PSO_SOP.Name = "PSO_SOP";
             this.PSO_SOP.SelectedIndex = 0;
-            this.PSO_SOP.Size = new System.Drawing.Size(776, 417);
+            this.PSO_SOP.Size = new System.Drawing.Size(1017, 552);
             this.PSO_SOP.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.PSO_SOP.TabIndex = 1;
             // 
@@ -74,7 +77,7 @@
             this.PSO_SOPPage.Location = new System.Drawing.Point(4, 24);
             this.PSO_SOPPage.Name = "PSO_SOPPage";
             this.PSO_SOPPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PSO_SOPPage.Size = new System.Drawing.Size(768, 389);
+            this.PSO_SOPPage.Size = new System.Drawing.Size(1009, 524);
             this.PSO_SOPPage.TabIndex = 0;
             this.PSO_SOPPage.Text = "PSO SOP";
             // 
@@ -144,7 +147,7 @@
             // 
             this.PSO_SOPCozumButton.BackColor = System.Drawing.Color.Pink;
             this.PSO_SOPCozumButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.PSO_SOPCozumButton.Location = new System.Drawing.Point(157, 277);
+            this.PSO_SOPCozumButton.Location = new System.Drawing.Point(6, 191);
             this.PSO_SOPCozumButton.Name = "PSO_SOPCozumButton";
             this.PSO_SOPCozumButton.Size = new System.Drawing.Size(389, 33);
             this.PSO_SOPCozumButton.TabIndex = 3;
@@ -155,15 +158,35 @@
             // Senaryo1
             // 
             this.Senaryo1.BackColor = System.Drawing.Color.DarkCyan;
-            this.Senaryo1.Controls.Add(this.button1);
+            this.Senaryo1.Controls.Add(this.S1Fill_Button);
+            this.Senaryo1.Controls.Add(this.S1load_GVW);
+            this.Senaryo1.Controls.Add(this.S1Solve_Button);
             this.Senaryo1.Controls.Add(this.SolveMethod_ComboBox);
             this.Senaryo1.Controls.Add(this.S1_comboBox);
             this.Senaryo1.Location = new System.Drawing.Point(4, 24);
             this.Senaryo1.Name = "Senaryo1";
             this.Senaryo1.Padding = new System.Windows.Forms.Padding(3);
-            this.Senaryo1.Size = new System.Drawing.Size(768, 389);
+            this.Senaryo1.Size = new System.Drawing.Size(1009, 524);
             this.Senaryo1.TabIndex = 1;
             this.Senaryo1.Text = "KTYP SENARYO 1";
+            // 
+            // S1load_GVW
+            // 
+            this.S1load_GVW.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.S1load_GVW.Location = new System.Drawing.Point(483, 3);
+            this.S1load_GVW.Name = "S1load_GVW";
+            this.S1load_GVW.RowTemplate.Height = 25;
+            this.S1load_GVW.Size = new System.Drawing.Size(523, 515);
+            this.S1load_GVW.TabIndex = 5;
+            // 
+            // S1Solve_Button
+            // 
+            this.S1Solve_Button.Location = new System.Drawing.Point(6, 453);
+            this.S1Solve_Button.Name = "S1Solve_Button";
+            this.S1Solve_Button.Size = new System.Drawing.Size(430, 65);
+            this.S1Solve_Button.TabIndex = 4;
+            this.S1Solve_Button.Text = "SENARYO 1 ÇÖZ";
+            this.S1Solve_Button.UseVisualStyleBackColor = true;
             // 
             // SolveMethod_ComboBox
             // 
@@ -188,20 +211,21 @@
             this.S1_comboBox.TabIndex = 2;
             this.S1_comboBox.Text = "Veri Seç";
             // 
-            // button1
+            // S1Fill_Button
             // 
-            this.button1.Location = new System.Drawing.Point(3, 318);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(430, 65);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "SENARYO 1 ÇÖZ";
-            this.button1.UseVisualStyleBackColor = true;
+            this.S1Fill_Button.Location = new System.Drawing.Point(6, 35);
+            this.S1Fill_Button.Name = "S1Fill_Button";
+            this.S1Fill_Button.Size = new System.Drawing.Size(430, 30);
+            this.S1Fill_Button.TabIndex = 6;
+            this.S1Fill_Button.Text = "Senaryo Datalarını Getir";
+            this.S1Fill_Button.UseVisualStyleBackColor = true;
+            this.S1Fill_Button.Click += new System.EventHandler(this.S1Fill_Button_Click);
             // 
             // STATIK_ALGORITMALAR
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1041, 585);
             this.Controls.Add(this.PSO_SOP);
             this.Name = "STATIK_ALGORITMALAR";
             this.Text = "STATIK_ALGORITMALAR";
@@ -210,6 +234,7 @@
             this.PSO_SOPPage.ResumeLayout(false);
             this.PSO_SOPPage.PerformLayout();
             this.Senaryo1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.S1load_GVW)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -230,6 +255,8 @@
         private System.Windows.Forms.CheckBox EKS_Checkbox;
         private System.Windows.Forms.ComboBox S1_comboBox;
         private System.Windows.Forms.ComboBox SolveMethod_ComboBox;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button S1Solve_Button;
+        private System.Windows.Forms.DataGridView S1load_GVW;
+        private System.Windows.Forms.Button S1Fill_Button;
     }
 }

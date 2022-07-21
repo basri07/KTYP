@@ -46,5 +46,16 @@ namespace KTYP
             baglanti.Close();
             return S1_comboBox;
         }
+        public DataGridView KTYPSenaryo1LoadGVW(DataGridView S1LoadGW,string Problem_ID)
+        {
+            string sorgu = "SELECT *FROM KTYP.. KTYP_PROBLEM WHERE PROBLEM_ID='"+Problem_ID+"' AND Pickup_Node_Def='DM'";
+            baglanti.Open();
+            SqlDataAdapter da = new SqlDataAdapter(sorgu, baglanti);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            S1LoadGW.DataSource = ds.Tables[0];
+            baglanti.Close();
+            return S1LoadGW;
+        }
     }
 }
